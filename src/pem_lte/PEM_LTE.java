@@ -63,16 +63,7 @@ public class PEM_LTE
                 }
                 else if(args[i].equals("-powerChange"))
                 {
-                    powerChange=true;
-                    if(args.length>(i+1))
-                    {
-                        if(args[i+1].equalsIgnoreCase("-nbi"))
-                        {
-                            i++;
-                            powerChangeNbi=true;
-                        }
-                    }
-                }
+                    powerChange=true;                }
                 else if (args[i].equalsIgnoreCase("-h"))
                 {
                     System.out.println("\r\n########################################################################################\r\n\t\tURUCHOMIENIE\r\n########################################################################################\r\n");
