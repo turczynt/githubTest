@@ -32,6 +32,7 @@ public class PEM_LTE
     {
         boolean onlyCheck=false;
         boolean powerChange=false;
+        boolean powerChangeNbi=false;
         try
         {
             
@@ -63,6 +64,14 @@ public class PEM_LTE
                 else if(args[i].equals("-powerChange"))
                 {
                     powerChange=true;
+                    if(args.length>(i+1))
+                    {
+                        if(args[i+1].equalsIgnoreCase("-nbi"))
+                        {
+                            i++;
+                            powerChangeNbi=true;
+                        }
+                    }
                 }
                 else if (args[i].equalsIgnoreCase("-h"))
                 {
