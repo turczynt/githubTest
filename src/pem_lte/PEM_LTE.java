@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
 import mysqlpackage.Baza;
 import mysqlpackage.DataSource;
 import mysqlpackage.OdpowiedzSQL;
@@ -33,6 +35,7 @@ public class PEM_LTE
         boolean onlyCheck=false;
         boolean powerChange=false;
         boolean powerChangeNbi=false;
+        java.util.ArrayList<String> changePowerCommands=new java.util.ArrayList<String>();
         try
         {
             
@@ -471,7 +474,8 @@ public class PEM_LTE
                                     {
                                         if(powerChange)
                                         {
-                                            changePower.dopisz(cells.get(c).getSimulationMML_STOP()+"\r\n");
+                                            changePowerCommands.addAll(Arrays.asList(cells.get(c).getSimulationMML_STOP().split("\r\n")));
+                                           // changePower.dopisz(cells.get(c).getSimulationMML_STOP()+"\r\n");
                                         }
                                         else
                                         {
@@ -480,14 +484,18 @@ public class PEM_LTE
                                         }
                                     }
                                     if(powerChange)
-                                        changePower.dopisz(wnioski.get(w).getSetTiltMML_START()+"\r\n");
+                                    {
+                                        //changePower.dopisz(wnioski.get(w).getSetTiltMML_START()+"\r\n");
+                                        changePowerCommands.addAll(Arrays.asList(wnioski.get(w).getSetTiltMML_START().split("\r\n")));
+                                    }
                                     if(!powerChange)
                                         STOP = STOP + wnioski.get(w).getSetTiltMML_STOP();
                                     for (int c = 0; c < cells.size(); c++)
                                     {
                                         if(powerChange)
                                         {
-                                            changePower.dopisz(cells.get(c).getSetPowMML_START()+"\r\n");
+                                            changePowerCommands.addAll(Arrays.asList(cells.get(c).getSetPowMML_START().split("\r\n")));
+                                            //changePower.dopisz(cells.get(c).getSetPowMML_START()+"\r\n");
                                         }
                                         else
                                         {
@@ -547,6 +555,7 @@ public class PEM_LTE
                                     
                                     if(powerChange)
                                     {
+                                        changePowerCommands.addAll(Arrays.asList(cells.get(c).getSimulationMML_START().split("\r\n")));
                                         changePower.dopisz(cells.get(c).getSimulationMML_START()+"\r\n");
                                     }
                                     else
@@ -569,16 +578,41 @@ public class PEM_LTE
                     }
                     if(!powerChange)
                     {
-                    if (generateOnlyIfOk == false || ERROR.equals(""))
-                    {
-                        FileStart.dopisz(START);
-                        FileStop.dopisz(STOP);
-                        System.out.println("GENEROWANIE KOMEND ZAKONCZONE (" + aspemOs.length + "):\r\n\t-" + FileStart.pass() + "\r\n\t-" + FileStop.pass() + "\r\n\t-" + listF.pass());
-                    }
+                        if (generateOnlyIfOk == false || ERROR.equals(""))
+                        {
+                            FileStart.dopisz(START);
+                            FileStop.dopisz(STOP);
+                            System.out.println("GENEROWANIE KOMEND ZAKONCZONE (" + aspemOs.length + "):\r\n\t-" + FileStart.pass() + "\r\n\t-" + FileStop.pass() + "\r\n\t-" + listF.pass());
+                        }
                     }
                     else
                     {
-                       System.out.println("GENEROWANIE KOMEND ZAKONCZONE (" + aspemOs.length + "):\r\n\t-" + changePower.pass() + "\r\n\t-" + listF.pass());
+                        changePower.dopisz(changePowerCommands);
+                       if(powerChangeNbi)
+                       {
+                           NBISender sender=new NBISender(m2000Ip, "U-boot","utranek098", listF, changePowerCommands);
+                           sender.executeCommands();
+                           if(sender.isAllCommandSucceded())
+                           {
+                               System.out.println("\r\r\r\n#################################\r\n");
+                               System.out.println(" ZMIANA MOCY ZAKONCZONA");
+                               System.out.println(" SCZEGOLY OPERACJI:\r\n\t-" + changePower.pass() + "\r\n\t-" + listF.pass());
+                               System.out.println("\r\r\r\n#################################\r\n");
+                           }
+                           else
+                           {
+                               System.out.println("\r\r\r\n#################################\r\n");
+                               System.out.println(" ZMIANA MOCY ZAKONCZONA,NIE UDANYCH KOMEND:"+sender.getlicznikBledow());
+                               System.out.println(sender.getErrorsInfo());
+                               System.out.println(" SCZEGOLY OPERACJI:\r\n\t-" + changePower.pass() + "\r\n\t-" + listF.pass());
+                               System.out.println("\r\r\r\n#################################\r\n");
+                               
+                           }
+                       }
+                       else
+                       {
+                           System.out.println("GENEROWANIE KOMEND ZAKONCZONE (" + aspemOs.length + "):\r\n\t-" + changePower.pass() + "\r\n\t-" + listF.pass());
+                       }
                     }
                 }
                 else
