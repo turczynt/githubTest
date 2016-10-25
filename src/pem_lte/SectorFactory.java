@@ -658,7 +658,8 @@ public class SectorFactory
             {
                 try
                 {
-                    subcarierNumber=Integer.parseInt(ecellSDet.get(e).getWartosc("Downlink bandwidth").replace("M", ""))*5*12;
+                   // subcarierNumber=Integer.parseInt(ecellSDet.get(e).getWartosc("Downlink bandwidth").replace("M", ""))*5*12;
+                    subcarierNumber=((int)Double.parseDouble(ecellSDet.get(e).getWartosc("Downlink bandwidth").replace("M", "")))*5*12;
                 }
                 catch(Exception exc)
                 {
