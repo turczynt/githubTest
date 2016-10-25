@@ -33,12 +33,11 @@ public class PEM_LTE
     public static void main(String[] args) throws SQLException, IOException
     {
         boolean onlyCheck=false;
-        boolean powerChange=false;
+        boolean powerChange=true;
         boolean powerChangeNbi=false;
         java.util.ArrayList<String> changePowerCommands=new java.util.ArrayList<String>();
         try
         {
-            
             String siteName = args[0].toUpperCase();//"PLN4460";
             String oryginalSiteName=args[0];
             if(siteName.contains("_"))
@@ -442,7 +441,8 @@ public class PEM_LTE
                     String tiltToSetTech=aspemOs[a][5];
                     if(powerChange)
                     {
-                        changePower.dopisz("\r\n\r\n//////////////azymutAsOs=" + (azymutAsOs/10) + "[stopni] bandAsOs=" + bandAsOs + " mocAsOs=" + mocAsOs + " tiltAsOs=" + tiltAsOs + "////////////\r\n");
+                        //changePower.dopisz("\r\n\r\n//////////////azymutAsOs=" + (azymutAsOs/10) + "[stopni] bandAsOs=" + bandAsOs + " mocAsOs=" + mocAsOs + " tiltAsOs=" + tiltAsOs + "////////////\r\n");
+                        changePowerCommands.add("//////////////azymutAsOs=\" + (azymutAsOs/10) + \"[stopni] bandAsOs=\" + bandAsOs + \" mocAsOs=\" + mocAsOs + \" tiltAsOs=\" + tiltAsOs + \"////////////");
                     }
                     else
                     {
@@ -556,7 +556,7 @@ public class PEM_LTE
                                     if(powerChange)
                                     {
                                         changePowerCommands.addAll(Arrays.asList(cells.get(c).getSimulationMML_START().split("\r\n")));
-                                        changePower.dopisz(cells.get(c).getSimulationMML_START()+"\r\n");
+                                        //changePower.dopisz(cells.get(c).getSimulationMML_START()+"\r\n");
                                     }
                                     else
                                         SYMULACJE = SYMULACJE + cells.get(c).getSimulationMML_START() + "\r\n";

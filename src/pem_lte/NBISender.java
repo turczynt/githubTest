@@ -50,7 +50,7 @@ public class NBISender
                 String out="";
                 try
                 {
-                    if(commands.get(c)!=null&&!commands.get(c).trim().equals(""))
+                    if(commands.get(c)!=null&&!commands.get(c).trim().equals("")&&!commands.get(c).startsWith("/////"))
                     {
                         System.out.print(c+"/"+this.commands.size()+" "+this.commands.get(c));
                         if(commands.get(c).contains("//SLEEP"))//   //SLEEP=30 czas podany w sekundach
