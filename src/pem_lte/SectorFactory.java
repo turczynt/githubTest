@@ -689,7 +689,7 @@ public class SectorFactory
                     //ResultSet res=testStatement.executeQuery(findRel);
                     //OdpowiedzSQL relacje=Baza.createAnswer(res);
                     OdpowiedzSQL relacje=testStatement.wykonajZapytanie(findRel);
-                    // System.out.println(relacje);
+                    // System.out.println(relacje); 
                     listF.dopisz(relacje.toString()+"\r\n");
                     ecell.setRelationToCell(relacje);
                     
