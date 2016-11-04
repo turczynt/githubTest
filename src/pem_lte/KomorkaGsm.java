@@ -17,7 +17,7 @@ public class KomorkaGsm extends Komorka
 {
     final Integer  priorytet=Komorka.KOMORKA_GSM;
     String id;
-    
+    boolean gsmStandAllone;
     String NeName;
     String kontrolerName;
     String cellName;
@@ -45,6 +45,18 @@ public class KomorkaGsm extends Komorka
         return this.priorytet;
     }
 
+    public boolean isGsmStandAllone()
+    {
+        return gsmStandAllone;
+    }
+
+    public void setGsmStandAllone(boolean gsmStandAllone)
+    {
+        this.gsmStandAllone = gsmStandAllone;
+    }
+
+    
+    
     String getConfigCheck_START()
     {
         return "";
@@ -69,6 +81,7 @@ public class KomorkaGsm extends Komorka
         this.lstBtsLocgr=new java.util.ArrayList<Paczka>();
         this.locGr=false;
         this.mainLocGr=false;
+        this.gsmStandAllone=false;
     }
 
     public void setNeName(String NeName)

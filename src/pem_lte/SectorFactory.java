@@ -117,8 +117,10 @@ public class SectorFactory
         java.util.ArrayList<Paczka> ucellOnRncSite=(new NPack(cellOnRnc,NPack.FORMAT_POZIOMY)).getAllPacks();
         
          String rru=north.make(this.NeName, "LST RRU:");
+         
          listF.dopisz(rru+"\r\n");
          java.util.ArrayList<Paczka> rruL=new java.util.ArrayList<Paczka>();
+         java.util.ArrayList<String> usedSRN=new java.util.ArrayList<String>();
          if(rru.contains("RETCODE = 0"))
          {
              NPack np=new NPack(rru);
@@ -127,7 +129,46 @@ public class SectorFactory
              {
                  np = new NPack(rru.split("\n"),new String[]{"LST RRU:"},new String[]{"-----"},new String[]{"---    END"});
                  rruL=np.getAllPacks();
+                
              }
+              for(Paczka singRRU:rruL)
+                 {
+                    // System.out.println("USED SRN="+singRRU.getWartosc("Subrack No."));
+                     usedSRN.add(singRRU.getWartosc("Subrack No."));
+                 }
+         }
+         java.util.ArrayList<Paczka> rruOnBts=new java.util.ArrayList<Paczka>();
+         String rruBts=north.make(this.bscName, "DSP BTSBRD: INFOTYPE=INPOSBRD,IDTYPE=BYNAME,BTSNAME=\""+this.BtsName+"\"");
+         listF.dopisz(rruBts+"\r\n");
+        
+         if(rruBts.contains("RETCODE = 0"))
+         {
+             NPack   np = new NPack(rruBts);//.split("\n"),new String[]{"DSP BTSBRD:"},new String[]{"-----"},new String[]{"---    END"});
+             java.util.ArrayList<Paczka> btssRRU=np.getAllPacks();
+             for(int rr=0;rr<btssRRU.size();rr++)
+             {
+                 //
+                 String brdType= btssRRU.get(rr).getWartosc("Physical Board Type");
+                 String srn=btssRRU.get(rr).getWartosc("Subrack No.");
+                 if(brdType.toUpperCase().contains("RRU")&&!usedSRN.contains(srn))
+                 {
+                    String cn=btssRRU.get(rr).getWartosc("Cabinet No.");
+                    
+                    String sn=btssRRU.get(rr).getWartosc("Slot No.");
+                    
+                    String rruBtsDet=north.make(this.bscName, "DSP BTSBRD: INFOTYPE=RUNPARA,IDTYPE=BYNAME,BTSNAME=\""+this.BtsName+"\",BRDTYPE=RXU,RXUIDTYPE=SRNSN,RXUCN="+cn+",RXUSRN="+srn+",RXUSN="+sn);
+                    listF.dopisz(rruBtsDet+"\r\n");
+                     NPack   rruDetNp = new NPack(rruBtsDet.split("\n"),new String[]{"DSP BTSBRD:"},new String[]{"-----"},new String[]{"---    END"});
+                     java.util.ArrayList<Paczka> RRUSbTS=rruDetNp.getAllPacks();
+                     for(Paczka RRU:RRUSbTS)
+                     {
+                        RRU.dodaj("Subrack No.",srn);
+                        rruOnBts.add(RRU);
+                     }
+                      //DSP BTSBRD: INFOTYPE=RUNPARA,IDTYPE=BYNAME,BTSNAME="34_SLP3101A_38597G_SLUBICEBLOK",BRDTYPE=RXU,RXUIDTYPE=SRNSN,RXUCN=0,RXUSRN=76,RXUSN=0;
+                 }
+             }  
+             
          }
         
          
@@ -263,8 +304,51 @@ public class SectorFactory
         for(int w=0;w<this.sektoryNaStacji.size();w++)
         {
           
-                    sektoryNaStacji.get(w).addKomorki(getGcell(sektoryNaStacji.get(w).azymut,sektoryNaStacji.get(w).pasmo,gcell_lcs,gcell,trxLst,bindLocGrpLst,BtsLocGrpLst,sektoryNaStacji.get(w).getSRNs(),north));
+                    sektoryNaStacji.get(w).addKomorki(getGcell(sektoryNaStacji.get(w).azymut,sektoryNaStacji.get(w).pasmo,gcell_lcs,gcell,trxLst,bindLocGrpLst,BtsLocGrpLst,sektoryNaStacji.get(w).getSRNs(),sektoryNaStacji.get(w).getSRN2Gs(),north));
         }
+        //used_azymutPasmo
+        //java.util.ArrayList<Paczka> gcell_lcs=(new NPack(lstGcelllcs,NPack.FORMAT_POZIOMY)).getAllPacks();
+        //java.util.ArrayList<Paczka> gcell=(new NPack(lstGcell,NPack.FORMAT_POZIOMY)).getAllPacks();
+        //azymut [0.1 stopni] pasmo=[800,900,1800,2600]
+        //used_azymutPasmo.add(azymut+";"+pasmo);
+        for(int l=0;l<gcell_lcs.size();l++)
+        {
+            String azymutFromCell=gcell_lcs.get(l).getWartosc("Antenna Azimuth Angle");
+            if(!azymutFromCell.equals("0"))
+            {    azymutFromCell=azymutFromCell+"0";
+            
+                String cellInd=gcell_lcs.get(l).getWartosc("Cell Index");
+                String pasmo=null;
+                
+                for(int g=0;pasmo==null&&g<gcell.size();g++)
+                {
+                    
+                    if(gcell.get(g).getWartosc("Cell Index").equals(cellInd))
+                    {
+                        String band=gcell.get(g).getWartosc("Freq. Band");
+                        
+                        if(band.contains("1800"))
+                            pasmo="1800";
+                        else if(band.contains("900"))
+                            pasmo="900";
+                    }
+                }
+                if(pasmo!=null&&!used_azymutPasmo.contains(azymutFromCell+";"+pasmo))
+                {
+                   used_azymutPasmo.add(azymutFromCell+";"+pasmo);
+                   sektor sek=new pem_lte.sektor(azymutFromCell, pasmo,bscName,BtsName,NeName,onlyCheck);
+                   sek.setGsmStandAllone(true);
+                   java.util.ArrayList<Paczka> selectedRRU=findStandAloneRruFitsToBandAzymuth(pasmo,azymutFromCell,rruOnBts,trxLst,gcell,gcell_lcs);
+                   sek.setRruOnlyGsm(selectedRRU);
+                   sek.addKomorki(getGcell(azymutFromCell,pasmo,gcell_lcs,gcell,trxLst,bindLocGrpLst,BtsLocGrpLst,sek.getSRNs(),sek.getSRN2Gs(),north));
+                   System.out.println("GSM STAND ALONE:"+azymutFromCell+";"+pasmo);
+                   this.sektoryNaStacji.add(sek);
+                }
+                 
+                
+            }
+        }
+        
         
         north.closeBuffor();
         //north.make("", rncName)
@@ -273,7 +357,7 @@ public class SectorFactory
         
     }
     
-    public java.util.ArrayList<Komorka> getGcell(String azymut,String pasmo,java.util.ArrayList<Paczka> lstGcelllcs,java.util.ArrayList<Paczka> lstGcell,java.util.ArrayList<Paczka> lstTrx,java.util.ArrayList<Paczka> bindLocGrpLst,java.util.ArrayList<Paczka> BtsLocGrpLst,java.util.ArrayList<String> srn3G,NorthB north) throws NBIAnsException
+    public java.util.ArrayList<Komorka> getGcell(String azymut,String pasmo,java.util.ArrayList<Paczka> lstGcelllcs,java.util.ArrayList<Paczka> lstGcell,java.util.ArrayList<Paczka> lstTrx,java.util.ArrayList<Paczka> bindLocGrpLst,java.util.ArrayList<Paczka> BtsLocGrpLst,java.util.ArrayList<String> srn3G,java.util.ArrayList<String> srnOnlyBts,NorthB north) throws NBIAnsException
     {
         java.util.ArrayList<Komorka> kom=new java.util.ArrayList<Komorka>();
         
@@ -471,6 +555,14 @@ public class SectorFactory
                                  
                                  
                              }
+                             if(srnOnlyBts.contains(lstTrx.get(t).getWartosc("Subrack No.")))
+                             {
+                                 srn=lstTrx.get(t).getWartosc("Subrack No.");
+                                 gcell.setLstTrx(lstTrx.get(t));
+                                 gcell.setGsmStandAllone(true);
+                                 
+                                 
+                             }
                          }
                       }
                      if(srn!=null)
@@ -570,6 +662,63 @@ public class SectorFactory
         return rru;
         
     }
+    
+    private java.util.ArrayList<Paczka> findStandAloneRruFitsToBandAzymuth(String pasmoFromCell,String azymutFromCell,java.util.ArrayList<Paczka> lstRRU,java.util.ArrayList<Paczka>trxy,java.util.ArrayList<Paczka>gcell,java.util.ArrayList<Paczka> gcell_lcs)
+    {
+        java.util.ArrayList<Paczka> rruSubList=new java.util.ArrayList<Paczka>();
+      //  if(!azymutFromCell.equals("0"))
+        //    {    azymutFromCell=azymutFromCell+"0";
+            
+        java.util.AbstractList<String> usedSubracks=new java.util.ArrayList<String>();
+        for(int l=0;l<gcell_lcs.size();l++)
+        {
+                String cellInd=gcell_lcs.get(l).getWartosc("Cell Index");
+               
+               String azymut=gcell_lcs.get(l).getWartosc("Antenna Azimuth Angle");
+               if(!azymut.equals("0"))
+                    azymut=azymut+"0";
+               if(azymut.equals(azymutFromCell))
+               {
+                    for(int g=0;g<gcell.size();g++)
+                    {
+
+                        if(gcell.get(g).getWartosc("Cell Index").equals(cellInd))
+                        {
+                            String band=gcell.get(g).getWartosc("Freq. Band");
+                             String pasmo="";
+                            if(band.contains("1800"))
+                                pasmo="1800";
+                            else if(band.contains("900"))
+                                pasmo="900";
+
+                            if(pasmo.equals(pasmoFromCell))
+                            {
+                                for(Paczka trx:trxy)
+                                {
+                                    String trxCellIndex=trx.getWartosc("Cell Index");
+                                    if(trxCellIndex.equals(cellInd))
+                                    {
+                                        if(!usedSubracks.contains(trx.getWartosc("Subrack No.")))
+                                        usedSubracks.add(trx.getWartosc("Subrack No."));
+                                        
+                                    }
+                                }
+                            }
+                        }
+                    }
+               }
+          //  }
+        }
+        for(Paczka RRU:lstRRU)
+        {
+            if(usedSubracks.contains(RRU.getWartosc("Subrack No.")))
+            {
+                rruSubList.add(RRU);
+            }
+        }
+        return rruSubList;
+    }
+    
     
     private java.util.ArrayList<Paczka> getSectEqLst(String sektorId,java.util.ArrayList<Paczka> sectorEqLst,NorthB north,String pasmo) throws NBIAnsException
     {

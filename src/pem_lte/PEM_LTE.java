@@ -33,7 +33,7 @@ public class PEM_LTE
     public static void main(String[] args) throws SQLException, IOException
     {
         boolean onlyCheck=false;
-        boolean powerChange=true;
+        boolean powerChange=false;
         boolean powerChangeNbi=false;
         java.util.ArrayList<String> changePowerCommands=new java.util.ArrayList<String>();
         try
@@ -77,14 +77,27 @@ public class PEM_LTE
                 }
                 else if (args[i].equalsIgnoreCase("-h"))
                 {
+                    
                     System.out.println("\r\n########################################################################################\r\n\t\tURUCHOMIENIE\r\n########################################################################################\r\n");
+                    if(powerChange)
+                    {
+                         System.out.println("java -jar PEM_LTE_ChangePowerNBI.jar siteName");
+                    System.out.println("\r\n#### DODATKOWE(opcjonalne) PARAMETRY WYWOLANIA: ####\r\n");
+                    System.out.println("\t -nbi\tGenerowanie komend oraz wykonanie ich przy pomocy interfejsu NBI");
+                    System.out.println("\t -h\t\tWyswietlenie dostepnych opcji");
+                    System.out.println("\r\n");
+                    }
+                    else
+                    {
                     System.out.println("java -jar PEM_LTE.jar siteName");
                     System.out.println("\r\n#### DODATKOWE(opcjonalne) PARAMETRY WYWOLANIA: ####\r\n");
                     System.out.println("\t -skipErrors\tWygeneruj komendy dla \"Pasmo/Azymut\" ktore nie zawieraja bledow");
                     System.out.println("\t -skipSimCheck\tWygeneruj komendy pomimo aktualnie trwajacych pomiarow  na danej stacji");
+                   
                     System.out.println("\t -checkOnly\tSprawdzenie poprawnosci stacji, bez generowania komend");
                     System.out.println("\t -h\t\tWyswietlenie dostepnych opcji");
                     System.out.println("\r\n");
+                    }
                     System.exit(0);
                 }
             }
@@ -97,13 +110,14 @@ public class PEM_LTE
             baza.connectMS();
 
             String[][] aspemOs = baza.pobierzWnioski(siteName);
+             baza.disconnect();
 
             if (aspemOs.length == 0)
             {
                 System.out.println("BRAK WNIOSKOW W BAZIE IDB PASUJACYCH DO WZORCA=*" + siteName + "*");
                 System.exit(0);
             }
-            baza.disconnect();
+           
 
             boolean brakDanych = false;
             for (int a = 0; a < aspemOs.length; a++)
@@ -182,6 +196,7 @@ public class PEM_LTE
                 }
                 
                  String pathBegin = "/usr/samba/utran/PP/WO/SCRIPTS/PEM/" + System.getProperty("user.name") + "/";
+                // String pathBegin = "C:\\TOOL_PROJECTS\\WO\\" + System.getProperty("user.name") + "\\";
                 if(onlyCheck)
                     pathBegin="";
                 File katalog = new File(pathBegin + siteName);
@@ -196,7 +211,7 @@ public class PEM_LTE
                 NewFile FileStop = new NewFile(katalog.getAbsolutePath() + "/"+siteName+"_STOP_" + obecnyDzienCzas + ".txt");
                 NewFile listF = new NewFile(listingsPath);
                 NewFile changePower= new NewFile(katalog.getAbsolutePath() + "/"+siteName+"_ChangePowerMML_" + obecnyDzienCzas + ".txt");
-                listF.dopisz(baza.getWnioski().toString() + "\r\n");
+               listF.dopisz(baza.getWnioski().toString() + "\r\n");
                 
                 
                 

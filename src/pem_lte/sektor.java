@@ -19,11 +19,13 @@ import nbipackage.Paczka;
 public class sektor
 {
    static final double tolerancja=0.03; 
+   boolean gsmStandAllone;
    String azymut;
    String pasmo;
    java.util.ArrayList<String> sektors_Id;
    java.util.ArrayList<Komorka> komorki;
    java.util.ArrayList<Paczka> rru;
+   java.util.ArrayList<Paczka> rruOnlyGsm;
    java.util.ArrayList<Paczka> sectorEqDet;
    java.util.ArrayList<Paczka> dspRetSubUnit;
    String m2000Ip;
@@ -56,14 +58,28 @@ public class sektor
         this.sektors_Id = new java.util.ArrayList<String>();
         this.komorki=new java.util.ArrayList<Komorka>();
         this.rru=new java.util.ArrayList<Paczka>();
+        this.rruOnlyGsm=new java.util.ArrayList<Paczka>();
         this.sectorEqDet=new java.util.ArrayList<Paczka>();
         this.dspRetSubUnit=new java.util.ArrayList<Paczka> ();
         this.onlyCheck=onlyCheck;
-        
+        this.gsmStandAllone=false;
        // preparePowerToSet();
         
     }
 
+    public boolean isGsmStandAllone()
+    {
+        return gsmStandAllone;
+    }
+
+    public void setGsmStandAllone(boolean gsmStandAllone)
+    {
+        this.gsmStandAllone = gsmStandAllone;
+    }
+
+    
+    
+    
     public ArrayList<Paczka> getSectorEqDet()
     {
         return sectorEqDet;
@@ -113,6 +129,28 @@ public class sektor
     {
         this.rru.add(rru);
     }
+     
+     
+     public ArrayList<Paczka> getRruOnlyGsm()
+    {
+        return rruOnlyGsm;
+    }
+
+    public void setRruOnlyGsm(ArrayList<Paczka> rruOnlyGsm)
+            
+    {
+        this.rruOnlyGsm = rruOnlyGsm;
+    }
+    public void addRruOnlyGsm(ArrayList<Paczka> rruOnlyGsm)
+    {
+        this.rruOnlyGsm.addAll(rruOnlyGsm);
+    }
+     public void addRruOnlyGsm(Paczka rruOnlyGsm)
+    {
+        this.rruOnlyGsm.add(rruOnlyGsm);
+    }
+     
+     
     public ArrayList<Komorka> getKomorki()
     {
         return komorki;
@@ -215,6 +253,13 @@ public class sektor
             odp=odp+"\tsrn="+this.rru.get(r).getWartosc("Subrack No.")+ " RX_num="+this.rru.get(r).getWartosc("Number of RX channels")+" maxPow="+Komorka.miliDbm2Wat(RRUPOw);
             
         }
+        for(int r=0;r<this.rruOnlyGsm.size();r++)
+        {
+            String RRUPOw=this.rruOnlyGsm.get(r).getWartosc("Hardware Maximum Output Power of the TX Channel(Route A) (10mW)");
+           
+            odp=odp+"\t ONLY_GSM srn="+this.rruOnlyGsm.get(r).getWartosc("Subrack No.")+ " RX_num="+this.rruOnlyGsm.get(r).getWartosc("Number of RX channels")+" maxPow(one tx chanel)[10mW]="+RRUPOw;
+            
+        }
                 
         return odp;
     }
@@ -239,7 +284,17 @@ public class sektor
         }
         return srns;
     }
-    public void preparePowerToSet()
+    public java.util.ArrayList<String> getSRN2Gs()
+    {
+        java.util.ArrayList<String> srns=new java.util.ArrayList<String>();
+        if(this.rruOnlyGsm!=null)
+        {
+            for(Paczka dspRR:rruOnlyGsm)
+            srns.add(dspRR.getWartosc("Subrack No."));
+        }
+        return srns;
+    }
+    public void preparePowerToSetNormal()
     {
         //this.komorki
         for(int z=0;z<this.rru.size();z++)
@@ -417,6 +472,145 @@ public class sektor
         
         
     }
+    
+    public void preparePowerToSet()
+    {
+        if(this.gsmStandAllone)
+            preparePowerToSetGsmStandAllone();
+        else
+           preparePowerToSetNormal(); 
+    }
+    
+    public void preparePowerToSetGsmStandAllone()
+    {
+        //this.komorki
+        //CheckMax
+       
+        Hashtable<String,Double> maxPowerPerSrn=maxPowPerSrnGsmStandAlonePrepare();
+        Hashtable<String,Double> PowerPerSrnTMP=(Hashtable<String,Double>)maxPowerPerSrn.clone();
+        
+        Hashtable<String,Double> maxPowerPerAntPass=maxPowPerAntPassPrepare(maxPowerPerSrn);
+        Hashtable<String,Double> PowerPerAntPassTMP=(Hashtable<String,Double>)maxPowerPerAntPass.clone();
+        Hashtable<String,Integer> TxPerAntPass=txNumPerAntPass();
+        //for(int w=0;w<this.rru.size();w++)
+          //  ;
+       Enumeration<String> srny= maxPowerPerSrn.keys();
+        //System.out.println("///////////////MAKSYMLNE MOCE PER SRN Azymut="+this.azymut+" Pasmo="+this.pasmo+" sektor ids="+this.sektors_Id.toString()+"  snry="+this.getSRNs()+"/////////");
+        double maxAllRRU=0;
+        while(srny.hasMoreElements())
+        {
+            String key=srny.nextElement();
+          //  System.out.println("SRN"+key+" MOC MAKSYMALNA RRU="+maxPowerPerSrn.get(key));
+            maxAllRRU=maxAllRRU+maxPowerPerSrn.get(key);
+        }
+         // System.out.println("///////////MAKSYMLNE MOCE PER SectorEq Azymut="+this.azymut+" Pasmo="+this.pasmo+" sektor ids="+this.sektors_Id.toString()+"/////////");
+        Enumeration<String> eqipmenty= maxPowerPerAntPass.keys();
+        double maxAllEq=0;
+        while(eqipmenty.hasMoreElements())
+        {
+            String key=eqipmenty.nextElement();
+           // System.out.println("SECEQID="+key+" MOC MAKSYMALNA="+maxPowerPerEq.get(key));
+            maxAllEq=maxAllEq+maxPowerPerAntPass.get(key);
+        }
+        if(maxAllEq>maxAllRRU)
+            maxAllEq=maxAllRRU;
+        
+  
+        System.out.println("MAX SPRZETOWY="+(maxAllRRU)+" MAX KONFIGURACYJNY="+maxAllEq+" DO USTAWIENIA(3% tolerancji)="+(this.mocAsOs*(1.0-tolerancja)));
+        if((this.mocAsOs*(1.0-tolerancja))>maxAllRRU||(this.mocAsOs*(1.0-tolerancja))>maxAllEq)
+        {
+            //System.out.println("Moc do ustawienia="+this.mocAsOs+"("+(this.mocAsOs*(1.0-tolerancja))+") przekracza mozliwosci sprzetowe.Konf RRU maxPow="+maxAllRRU+", Konf SecEq maxPow="+maxAllEq);
+            valuOutOfRange=true;
+            errors=errors+"Moc do ustawienia="+this.mocAsOs+"("+(this.mocAsOs*(1.0-tolerancja))+"). Mozliwosci hardware'owe="+maxAllRRU+", z wuzglednieniem aktualnej konfiguracji="+maxAllEq+"\r\n";
+        }
+        else
+        {
+            
+            double sumaryPowToSet=this.mocAsOs;
+            if((this.mocAsOs)>maxAllRRU)
+                sumaryPowToSet=maxAllRRU;
+            
+            if((this.mocAsOs)>maxAllEq)
+                sumaryPowToSet=maxAllEq;
+            
+                
+            
+            for(int a=0;a<this.komorki.size();a++)
+            {
+                String eqId=this.komorki.get(a).getPosition();               
+                String srnId=null;
+                boolean locGr=false;                
+                               
+                if(this.komorki.get(a).getPriorytet()==Komorka.KOMORKA_GSM)
+                {
+                    srnId=this.komorki.get(a).getPosition();
+                
+                    if(((KomorkaGsm)this.komorki.get(a)).isLocGr())
+                                locGr=true;
+                }
+               // System.out.println("KOMORKA="+this.komorki.get(a).getName()+" srnId="+srnId+" eqId="+eqId+" PowerPerSrnTMP.get(srnId)="+PowerPerSrnTMP.get(srnId)+" PowerPerEqTMP.get(eqId)="+PowerPerEqTMP.get(eqId));
+                if(srnId!=null&&PowerPerSrnTMP.get(srnId)!=null)
+                {
+                    //PowerPerSrnTMP
+                    //PowerPerEqTMP
+                    double powToSetOnCell=-1;
+                   if(sumaryPowToSet==0)
+                   {
+                       powToSetOnCell=0;                       
+                   }
+                   else if(PowerPerSrnTMP.get(srnId)>=sumaryPowToSet)//&&komorki.get(a).getMaximumCellPower()>=sumaryPowToSet)     
+                   {
+                       powToSetOnCell=sumaryPowToSet;
+                       PowerPerSrnTMP.put(srnId, PowerPerSrnTMP.get(srnId)-powToSetOnCell);
+                       
+                       sumaryPowToSet=sumaryPowToSet-powToSetOnCell;
+                   }
+                   else
+                   {
+                       if(PowerPerSrnTMP.get(srnId)<sumaryPowToSet)
+                       {
+                           powToSetOnCell=PowerPerSrnTMP.get(srnId);
+                          
+                           PowerPerSrnTMP.put(srnId,0.0);
+                           sumaryPowToSet=sumaryPowToSet-powToSetOnCell;                           
+                       }
+                       
+                   }
+                   if(powToSetOnCell<this.mocAsOs*(tolerancja))
+                   {
+                       powToSetOnCell=0.0;
+                       //sumaryPowToSet=0.0;
+                   }
+                  
+                   if(powToSetOnCell==0.0)
+                   {
+                        if(locGr)
+                            this.komorki.get(a).setPowerToSet(0.1);
+                        else
+                            this.komorki.get(a).setPowerToSet(powToSetOnCell);
+                   }
+                   else
+                       this.komorki.get(a).setPowerToSet(powToSetOnCell);                 
+                }
+
+            }
+            if(sumaryPowToSet<this.mocAsOs*(tolerancja))
+            {
+                 sumaryPowToSet=0.0;
+                       //sumaryPowToSet=0.0;
+            }
+            if(sumaryPowToSet>0.0)
+            {
+               
+                valuOutOfRange=true;
+                errors=errors+"Moc do ustawienia="+this.mocAsOs+"W przekracza mozliwosci sprzetowe.Po podziale mocy per komorki pozostalo="+sumaryPowToSet+"W .Mozliwosci sprzetowe="+maxAllRRU+"W, Aktualna konfiguracja umozliwia="+maxAllEq+"W\r\n";
+               
+            }
+        }
+       
+        
+        
+    }
     public String getErrors()
     {
         return errors;
@@ -498,6 +692,30 @@ public class sektor
         return hash;
     }
     
+    
+    private Hashtable<String,Double> maxPowPerSrnGsmStandAlonePrepare()
+    {
+        Hashtable<String,Double> hash=new Hashtable();
+        for(int z=0;z<this.rruOnlyGsm.size();z++)
+        {
+            try
+            {
+                String srn=this.rruOnlyGsm.get(z).getWartosc("Subrack No.");
+                String wholePowA=this.rruOnlyGsm.get(z).getWartosc("Hardware Maximum Output Power of the TX Channel(Route A) (10mW)");
+                String wholePowB=this.rruOnlyGsm.get(z).getWartosc("Hardware Maximum Output Power of the TX Channel(Route B) (10mW)");
+                double wholePowInWat=Double.parseDouble(wholePowA)/100+Double.parseDouble(wholePowB)/100;
+                if(srn!=null)
+                    hash.put(srn, wholePowInWat);
+            }
+            catch(Exception ee)
+            {
+                ee.printStackTrace();
+            }
+            
+        }
+        return hash;
+    }
+    
     private Hashtable<String,Integer> txNumPerEqId()
     {
         Hashtable<String,Integer> hash=new Hashtable();//key=EqId value=suma mocy przypisana do sectorEqId;
@@ -524,6 +742,130 @@ public class sektor
                 }
             }
         }
+        return hash;
+    }
+    
+    private Hashtable<String,Integer> txNumPerAntPass()
+    {
+        Hashtable<String,Integer> hash=new Hashtable();//key=EqId value=suma mocy przypisana do sectorEqId;
+        //Maximum output power on the TX channel(0.1dBm) /Number of TX channels
+        for(int z=0;z<this.rru.size();z++)
+        {
+            String srn=this.rru.get(z).getWartosc("Subrack No.");
+            
+           
+            for(int e=0;e<this.sectorEqDet.size();e++)
+            {
+                String srnFromEq=sectorEqDet.get(e).getWartosc("Subrack No.");
+                if(srn.equals(srnFromEq))
+                {
+                    String seqEqId=sectorEqDet.get(e).getWartosc("Sector Equipment ID");
+                    String antenaMode=sectorEqDet.get(e).getWartosc("Antenna RX/TX Mode");
+                    if(antenaMode.contains("TX")||antenaMode.contains("tx"))
+                    {
+                       if(hash.containsKey(seqEqId))
+                           hash.put(seqEqId, hash.get(seqEqId)+1);
+                       else
+                           hash.put(seqEqId, 1);
+                    }
+                }
+            }
+        }
+        return hash;
+    }
+    private Hashtable<String,Double> maxPowPerAntPassPrepare(Hashtable<String,Double> maxPowerPerSrn)
+    {
+        Hashtable<String,Double> hash=new Hashtable();//key=srn;antPass value=maxMoc jednego AntenaPortu;
+        //Maximum output power on the TX channel(0.1dBm) /Number of TX channels
+        
+        
+        for(Paczka rru:this.rruOnlyGsm)
+        {
+            String srn=rru.getWartosc("Subrack No.");
+            
+            ////wylowienie komorek obslugiwanych przez danySubrack.
+            java.util.ArrayList<KomorkaGsm> subCellList=new java.util.ArrayList<KomorkaGsm>();
+            
+            for(Komorka gcell:this.komorki)
+            {
+                if(((KomorkaGsm)gcell).getPosition().equals(srn))
+                {
+                    subCellList.add((KomorkaGsm)gcell);
+                }
+            }
+            
+            for(KomorkaGsm gcell:subCellList)
+            {
+                java.util.ArrayList<Paczka> trxy=gcell.getLstTrx();
+                for(Paczka trx:trxy)
+                {
+                    String antPass=trx.getWartosc("Antenna Pass No");
+                    String key=srn+";"+antPass;
+                    
+                    
+                    Double maxOneTrxPow=null;
+                    //maxOneTrxPow=20.0; odkomentowac jezeli moc pojedynczego trx ma byc nie wieksza niz
+                    
+                    String antPassPower=rru.getWartosc("Hardware Maximum Output Power of the TX Channel(Route "+antPass+") (10mW)");
+                    System.out.println("ANTPASS FROM TRX="+antPass);
+                    System.out.println(trx.getNazwy2());;
+                    if(!hash.contains(key))
+                    {
+                        try{
+                            
+                             double wholePowInWat=0.0;
+                             double antPow=Double.parseDouble(antPassPower)/100;
+                            if(maxOneTrxPow==null)
+                            {
+                                wholePowInWat=antPow;
+                            }
+                            else
+                            {
+                                if(maxOneTrxPow<=antPow)
+                                    wholePowInWat=maxOneTrxPow;
+                                else
+                                    wholePowInWat=antPow;
+                            }
+                            
+                            
+                            hash.put(key, wholePowInWat);
+                        }
+                        catch(Exception ee)
+                        {
+                            ee.printStackTrace();
+                        }
+                    }
+                    else
+                    {
+                        Double usedPartOfPower=hash.get(key);
+                        try
+                        {
+                            double wholePowInWat=0.0;
+                              double antPow=Double.parseDouble(antPassPower)/100;
+                            if(maxOneTrxPow==null)
+                            {
+                                wholePowInWat=antPow;
+                            }
+                            else
+                            {
+                                if(usedPartOfPower+maxOneTrxPow<=antPow)
+                                    wholePowInWat=usedPartOfPower+maxOneTrxPow;
+                                else
+                                    wholePowInWat=antPow;
+                            }
+                            
+                            
+                            hash.put(key, wholePowInWat);
+                        }
+                        catch(Exception ee)
+                        {
+                            ee.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        
         return hash;
     }
     private Hashtable<String,Double> maxPowPerEqPrepare(Hashtable<String,Double> maxPowerPerSrn)
