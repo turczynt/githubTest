@@ -33,7 +33,7 @@ public class PEM_LTE
     public static void main(String[] args) throws SQLException, IOException
     {
         boolean onlyCheck=false;
-        boolean powerChange=false;
+        boolean powerChange=true;
         boolean powerChangeNbi=false;
         java.util.ArrayList<String> changePowerCommands=new java.util.ArrayList<String>();
         try
@@ -112,9 +112,10 @@ public class PEM_LTE
             String[][] aspemOs =null;
             
             if(powerChange)
-                aspemOs=baza.pobierzWnioski(siteName);
-            else
                 aspemOs=baza.pobierzWnioskiChangePower(siteName);
+            else
+                aspemOs=baza.pobierzWnioski(siteName);
+
              baza.disconnect();
 
             if (aspemOs.length == 0)

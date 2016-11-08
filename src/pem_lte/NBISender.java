@@ -102,11 +102,9 @@ public class NBISender
         {
             try
             {
-            
                printWriter.close();
                stream.close();
                this.north.closeBuffor();
-                
             }
             catch(Exception eze)
             {
