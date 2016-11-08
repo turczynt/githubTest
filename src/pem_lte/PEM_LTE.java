@@ -109,7 +109,12 @@ public class PEM_LTE
             baza = new Idb(1433, "SqlQuery", "SqlQuery1234", "172.16.35.119",null);//, "UTRAN3.IDB2");
             baza.connectMS();
 
-            String[][] aspemOs = baza.pobierzWnioski(siteName);
+            String[][] aspemOs =null;
+            
+            if(powerChange)
+                aspemOs=baza.pobierzWnioski(siteName);
+            else
+                aspemOs=baza.pobierzWnioskiChangePower(siteName);
              baza.disconnect();
 
             if (aspemOs.length == 0)

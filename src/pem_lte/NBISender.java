@@ -133,6 +133,5 @@ public class NBISender
     {
         return this.licznikBledow;
     }
-    
-    
+       
 }

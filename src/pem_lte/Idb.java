@@ -283,9 +283,81 @@ OdpowiedzSQL wnioksi;
         System.out.println(wnioski);
         return wnioski;
     }
+    
+    private OdpowiedzSQL pobierzWnioskiZAsPemOsChangePower(String siteShortName)
+    {
+        
+        String req="Select PropertyName,(azimuth*10) as Azymut,PemTxPowerMaxMax as PemTxPowerMax,PemTiltMax,BandId,tech from UTRAN3.idb2.data.PEMZleconyMerge where PropertyName like '%"+siteShortName+"%'";
+       // OdpowiedzSQL wnioski=this.wykonajZapytanie("Select PropertyName,(azimuth*10) as Azymut,PemTxPowerMax,PemTiltMax,BandId from idb2.data.PEMZlecony where PropertyName like '%"+siteShortName+"%'");
+        
+        OdpowiedzSQL wnioski=this.wykonajZapytanie(req);
+        System.out.println(wnioski);
+        java.util.ArrayList<java.util.ArrayList<String>> daneTmp= new java.util.ArrayList<java.util.ArrayList<String>>();
+        java.util.ArrayList<String> usedValue=new java.util.ArrayList<String>();//KLUCZ:  azimut+";"+BandInd
+        for(int i=0;i<wnioski.rowCount();i++)
+        {
+            String klucz=wnioski.getValue("Azymut", i)+";"+wnioski.getValue("BandId", i);
+            int bb=-1;
+            java.util.ArrayList<String> rekord=null;
+                
+            if(usedValue.contains(klucz))
+            {
+                for(int a=0;a<daneTmp.size()&&rekord==null;a++)
+                {
+                    if(daneTmp.get(a).get(1).equals(wnioski.getValue("Azymut", i))&&daneTmp.get(a).get(4).equals(wnioski.getValue("BandId", i)))
+                    {
+                       
+                        bb=a;
+                    }
+                }                
+            }
+            else
+            {
+                rekord=new java.util.ArrayList<String>();
+            }
+            usedValue.add(klucz);
+            if(bb==-1)
+            {
+                daneTmp.add(wnioski.getRekord(i));
+            }
+            else
+            {
+                rekord=daneTmp.get(bb);
+                String newVal=""+ (Komorka.wat2miliDbm(Komorka.miliDbm2Wat(Double.parseDouble(wnioski.getValue("PemTxPowerMax", i).replaceAll(",", ".")) * 10)+Komorka.miliDbm2Wat(Double.parseDouble(rekord.get(2).replaceAll(",", ".")) * 10))/10);
+                rekord.set(2, newVal); // suma mocy
+                rekord.set(3, rekord.get(3)+","+wnioski.getValue("PemTiltMax", i)); // suma tiltVal
+                rekord.set(5, rekord.get(5)+","+wnioski.getValue("tech", i)); // suma tiltVal
+                daneTmp.set(bb, rekord);
+            }
+        }
+        wnioski.setRekordy(daneTmp);
+        
+        //System.out.println("Select PropertyName,(azimuth*10) as Azymut,PemTxPowerMax,PemTiltMax,BandId from idb2.data.PEMZlecony where PropertyName like '%"+siteShortName+"%'");
+        
+        
+        
+        System.out.println(wnioski);
+        return wnioski;
+    }
     public String[][] pobierzWnioski(String siteShortName)           
     {
         this.wnioksi=pobierzWnioskiZAsPemOs(siteShortName);
+         String[][] ww=new String[wnioksi.rowCount()][wnioksi.kolumnCount()];
+         for(int i=0;i<wnioksi.rowCount();i++)
+         {
+            ww[i]=wnioksi.getRekord(i).toArray(ww[i]);
+            if(ww[i][1].matches("[-][0-9]+"))
+            {
+                Integer tmp=3600+Integer.parseInt(ww[i][1]);
+                ww[i][1]=""+tmp;
+            }
+         }
+         return ww;
+    }
+
+    public String[][] pobierzWnioskiChangePower(String siteShortName)           
+    {
+        this.wnioksi=pobierzWnioskiZAsPemOsChangePower(siteShortName);
          String[][] ww=new String[wnioksi.rowCount()][wnioksi.kolumnCount()];
          for(int i=0;i<wnioksi.rowCount();i++)
          {
