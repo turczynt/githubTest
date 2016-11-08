@@ -462,7 +462,7 @@ public class PEM_LTE
                     if(powerChange)
                     {
                         //changePower.dopisz("\r\n\r\n//////////////azymutAsOs=" + (azymutAsOs/10) + "[stopni] bandAsOs=" + bandAsOs + " mocAsOs=" + mocAsOs + " tiltAsOs=" + tiltAsOs + "////////////\r\n");
-                        changePowerCommands.add("//////////////azymutAsOs=\" + (azymutAsOs/10) + \"[stopni] bandAsOs=\" + bandAsOs + \" mocAsOs=\" + mocAsOs + \" tiltAsOs=\" + tiltAsOs + \"////////////");
+                        changePowerCommands.add("//////////////azymutAsOs=" + (azymutAsOs/10) + "[stopni] bandAsOs=" + bandAsOs + " mocAsOs=" + mocAsOs + " tiltAsOs=" + tiltAsOs + "////////////");
                     }
                     else
                     {

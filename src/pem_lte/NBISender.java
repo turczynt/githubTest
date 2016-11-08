@@ -41,6 +41,8 @@ public class NBISender
         PrintWriter printWriter=null;
         try
         {
+            logs.dopisz("\r\n\r\n///////////////////////////////////NBI SENDER/////////////\r\n\r\n");
+            
             stream=new FileOutputStream(logs.pass(),true);
             printWriter=new PrintWriter(stream);
             
@@ -110,6 +112,7 @@ public class NBISender
             {
                 
             }
+            this.logs.dopisz("\r\n\r\n#######################LICZBA BLEDOW="+this.licznikBledow);
         }
               
                 
@@ -132,6 +135,5 @@ public class NBISender
     public int getlicznikBledow()
     {
         return this.licznikBledow;
-    }
-       
+    }       
 }
