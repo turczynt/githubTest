@@ -725,30 +725,30 @@ public class SectorFactory
         java.util.ArrayList<Paczka> secDet=new java.util.ArrayList<Paczka>();
         for(int e=0;e<sectorEqLst.size();e++)
         {
-                String secIdFromEq=sectorEqLst.get(e).getWartosc("Sector ID");
-                if(secIdFromEq.equals(sektorId))
-                {
-                    String odpSS=north.make(this.NeName, "LST SECTOREQM:SECTOREQMID="+sectorEqLst.get(e).getWartosc("Sector Equipment ID"));
-                    java.util.ArrayList<Paczka> temp;
-                     boolean oneAntenaPort= odpSS.indexOf("Number of results = 1", odpSS.indexOf("List Sector Equipment Antenna Configuration"))>0;
-                    if(oneAntenaPort)
+            String secIdFromEq=sectorEqLst.get(e).getWartosc("Sector ID");
+            if(secIdFromEq.equals(sektorId))
+            {
+                String odpSS=north.make(this.NeName, "LST SECTOREQM:SECTOREQMID="+sectorEqLst.get(e).getWartosc("Sector Equipment ID"));
+                java.util.ArrayList<Paczka> temp;
+                boolean oneAntenaPort= odpSS.indexOf("Number of results = 1", odpSS.indexOf("List Sector Equipment Antenna Configuration"))>0;
+                if(oneAntenaPort)
                     temp=(new NPack(odpSS,NPack.FORMAT_PIONOWY)).getAllPacks();
-                    else
-                        temp=(new NPack(odpSS,NPack.FORMAT_POZIOMY)).getAllPacks();
+                else
+                    temp=(new NPack(odpSS,NPack.FORMAT_POZIOMY)).getAllPacks();
                     
-                    listF.dopisz(odpSS+"\r\n");
-                    String srnV=null;
-                    String snV=null;
-                    String cnV=null;
-                    for(int s=0;s<temp.size();s++)
-                    {
-                        if(!temp.get(s).getWartosc("Subrack No.").equals(""))
-                            srnV=temp.get(s).getWartosc("Subrack No.");
-                        if(!temp.get(s).getWartosc("Slot No.").equals(""))
-                            snV=temp.get(s).getWartosc("Slot No.");
-                        if(!temp.get(s).getWartosc("Cabinet No.").equals(""))
-                            cnV=temp.get(s).getWartosc("Cabinet No.");
-                        if(srnV!=null&&snV!=null&&cnV!=null)
+                listF.dopisz(odpSS+"\r\n");
+                String srnV=null;
+                String snV=null;
+                String cnV=null;
+                for(int s=0;s<temp.size();s++)
+                {
+                    if(!temp.get(s).getWartosc("Subrack No.").equals(""))
+                        srnV=temp.get(s).getWartosc("Subrack No.");
+                    if(!temp.get(s).getWartosc("Slot No.").equals(""))
+                        snV=temp.get(s).getWartosc("Slot No.");
+                    if(!temp.get(s).getWartosc("Cabinet No.").equals(""))
+                        cnV=temp.get(s).getWartosc("Cabinet No.");
+                    if(srnV!=null&&snV!=null&&cnV!=null)
                         {
                         Paczka tt=temp.get(s);
                         tt.dodaj("Sector Equipment ID", sectorEqLst.get(e).getWartosc("Sector Equipment ID"));
@@ -756,10 +756,8 @@ public class SectorFactory
                         secDet.add(tt);
                         }
                     }
-                    
-        
                 }
-         }
+         }  
         return secDet;
         
     }
@@ -788,8 +786,6 @@ public class SectorFactory
             String dSPecellDetails=north.make(this.NeName, "DSP CELL:LOCALCELLID="+locellId);
             java.util.ArrayList<Paczka> dspCell=(new NPack(dSPecellDetails,NPack.FORMAT_PIONOWY)).getAllPacks();
             listF.dopisz(dSPecellDetails+"\r\n");
-            
-            
             
             String cellOpDet=north.make(this.NeName, "LST CELLOP:LOCALCELLID="+locellId);
             java.util.ArrayList<Paczka> cellOp=(new NPack(cellOpDet,NPack.FORMAT_PIONOWY)).getAllPacks();

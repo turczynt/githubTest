@@ -66,9 +66,9 @@ public class NBISender
                             out= this.north.MakeWithReg(this.commands.get(c));
                            
                             printWriter.println(out+"\r\n");
-                            if(out.contains("RETCODE = 0  Execution succeeded"))
+                            if(out.contains("RETCODE = 0"))
                             {
-                                System.out.println("RETCODE = 0  Execution succeeded");
+                                System.out.println("RETCODE = 0 [succeeded]");
                             }
                             else
                             {
