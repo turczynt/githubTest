@@ -450,13 +450,13 @@ public class sektor
                 {
                    if((sumaryPowToSet+this.komorki.get(0).getPowerToSet() )<=  maxAllEq)
                    {
-                       System.out.println("#################################ZWALONE MAIMO 4X NIE WIEM JAK ALE DZIALA###########################\r\n ");
+                      // System.out.println("#################################ZWALONE MAIMO 4X NIE WIEM JAK ALE DZIALA###########################\r\n ");
                        this.komorki.get(0).setPowerToSet(this.komorki.get(0).getPowerToSet()+sumaryPowToSet);
                    }
                    else
                    {
                        valuOutOfRange=true;
-                    errors=errors+"DZIADOSTWO: 2xRRU,1seqEQ,1 KomorkaMoc do ustawienia="+this.mocAsOs+"W przekracza mozliwosci sprzetowe.Po podziale mocy per komorki("+this.komorki.get(0).getPowerToSet()+") pozostalo="+sumaryPowToSet+"W .Konfiguracja RRU umozliwia="+maxAllRRU+"W, Konfiguracja SektorEq umozliwia="+maxAllEq+"W\r\n";
+                    errors=errors+"MIMO4x4: 2xRRU,1seqEQ,1 KomorkaMoc do ustawienia="+this.mocAsOs+"W przekracza mozliwosci sprzetowe.Po podziale mocy per komorki("+this.komorki.get(0).getPowerToSet()+") pozostalo="+sumaryPowToSet+"W .Konfiguracja RRU umozliwia="+maxAllRRU+"W, Konfiguracja SektorEq umozliwia="+maxAllEq+"W\r\n";
                 
                    }
                 
@@ -476,7 +476,10 @@ public class sektor
     public void preparePowerToSet()
     {
         if(this.gsmStandAllone)
+        {
+            System.out.println(this.azymut+" "+this.pasmo+" PROCEDURA GSMSTANDALLONE");
             preparePowerToSetGsmStandAllone();
+        }
         else
            preparePowerToSetNormal(); 
     }
@@ -485,7 +488,7 @@ public class sektor
     {
         //this.komorki
         //CheckMax
-       
+       System.out.println(this.azymut+" "+this.pasmo+" PROCEDURA GSMSTANDALLONE");
         Hashtable<String,Double> maxPowerPerSrn=maxPowPerSrnGsmStandAlonePrepare();
         Hashtable<String,Double> PowerPerSrnTMP=(Hashtable<String,Double>)maxPowerPerSrn.clone();
         
@@ -503,13 +506,13 @@ public class sektor
           //  System.out.println("SRN"+key+" MOC MAKSYMALNA RRU="+maxPowerPerSrn.get(key));
             maxAllRRU=maxAllRRU+maxPowerPerSrn.get(key);
         }
-         // System.out.println("///////////MAKSYMLNE MOCE PER SectorEq Azymut="+this.azymut+" Pasmo="+this.pasmo+" sektor ids="+this.sektors_Id.toString()+"/////////");
+          System.out.println("///////////MAKSYMLNE MOCE PER SectorEq Azymut="+this.azymut+" Pasmo="+this.pasmo+" sektor ids="+this.sektors_Id.toString()+"/////////");
         Enumeration<String> eqipmenty= maxPowerPerAntPass.keys();
         double maxAllEq=0;
         while(eqipmenty.hasMoreElements())
         {
             String key=eqipmenty.nextElement();
-           // System.out.println("SECEQID="+key+" MOC MAKSYMALNA="+maxPowerPerEq.get(key));
+            System.out.println("SECEQID="+key+" MOC MAKSYMALNA="+maxAllEq);
             maxAllEq=maxAllEq+maxPowerPerAntPass.get(key);
         }
         if(maxAllEq>maxAllRRU)
@@ -788,6 +791,7 @@ public class sektor
             
             for(Komorka gcell:this.komorki)
             {
+                if(gcell.getPriorytet()==Komorka.KOMORKA_GSM)
                 if(((KomorkaGsm)gcell).getPosition().equals(srn))
                 {
                     subCellList.add((KomorkaGsm)gcell);

@@ -315,7 +315,7 @@ public class SectorFactory
         {
             String azymutFromCell=gcell_lcs.get(l).getWartosc("Antenna Azimuth Angle");
             if(!azymutFromCell.equals("0"))
-            {    azymutFromCell=azymutFromCell+"0";
+                azymutFromCell=azymutFromCell+"0";
             
                 String cellInd=gcell_lcs.get(l).getWartosc("Cell Index");
                 String pasmo=null;
@@ -333,20 +333,60 @@ public class SectorFactory
                             pasmo="900";
                     }
                 }
-                if(pasmo!=null&&!used_azymutPasmo.contains(azymutFromCell+";"+pasmo))
+                if(pasmo!=null)
                 {
-                   used_azymutPasmo.add(azymutFromCell+";"+pasmo);
-                   sektor sek=new pem_lte.sektor(azymutFromCell, pasmo,bscName,BtsName,NeName,onlyCheck);
-                   sek.setGsmStandAllone(true);
-                   java.util.ArrayList<Paczka> selectedRRU=findStandAloneRruFitsToBandAzymuth(pasmo,azymutFromCell,rruOnBts,trxLst,gcell,gcell_lcs);
-                   sek.setRruOnlyGsm(selectedRRU);
-                   sek.addKomorki(getGcell(azymutFromCell,pasmo,gcell_lcs,gcell,trxLst,bindLocGrpLst,BtsLocGrpLst,sek.getSRNs(),sek.getSRN2Gs(),north));
-                   System.out.println("GSM STAND ALONE:"+azymutFromCell+";"+pasmo);
-                   this.sektoryNaStacji.add(sek);
-                }
+                    System.out.println("STAND ALONE GSM TEST "+azymutFromCell + ";" + pasmo);
+                    if (!used_azymutPasmo.contains(azymutFromCell + ";" + pasmo))
+                    {
+                        used_azymutPasmo.add(azymutFromCell + ";" + pasmo);
+                        sektor sek = new pem_lte.sektor(azymutFromCell, pasmo, bscName, BtsName, NeName, onlyCheck);
+
+                        sek.setGsmStandAllone(true);
+                        java.util.ArrayList<Paczka> selectedRRU = findStandAloneRruFitsToBandAzymuth(pasmo, azymutFromCell, rruOnBts, trxLst, gcell, gcell_lcs);
+                        sek.setRruOnlyGsm(selectedRRU);
+                        sek.addKomorki(getGcell(azymutFromCell, pasmo, gcell_lcs, gcell, trxLst, bindLocGrpLst, BtsLocGrpLst, sek.getSRNs(), sek.getSRN2Gs(), north));
+                        System.out.println("GSM STAND ALONE:" + azymutFromCell + ";" + pasmo);
+                        this.sektoryNaStacji.add(sek);
+                        
+                       
+                    }
+                    else
+                    {
+                        System.out.println("AZYMUT ISTNIEJE W 2G/3G: TEST SRN");
+                        for(int w=0;w<this.sektoryNaStacji.size();w++)
+                        {
+                            if(this.sektoryNaStacji.get(w).getAzymut().equals(azymutFromCell)&&this.sektoryNaStacji.get(w).getPasmo().equals(pasmo))
+                            {
+                                
+                                java.util.ArrayList<String> not2GsrnsUsed=this.sektoryNaStacji.get(w).getSRNs();
+                                System.out.println("ZNALEZIONY AZYMUT/PASMO test SRN:"+not2GsrnsUsed.toString()+" "+not2GsrnsUsed.toArray());
+                                java.util.ArrayList<Paczka> selectedRRU = findStandAloneRruFitsToBandAzymuth(pasmo, azymutFromCell, rruOnBts, trxLst, gcell, gcell_lcs);
+                                boolean onlyRRU=false;
+                                for(Paczka rruGsm:selectedRRU)
+                                {
+                                    System.out.println("CHECK:SRN="+rruGsm.getWartosc("Subrack No."));
+                                    if(!not2GsrnsUsed.contains(rruGsm.getWartosc("Subrack No.")))
+                                    {
+                                        this.sektoryNaStacji.get(w).addRruOnlyGsm(rruGsm);
+                                        System.out.println("ADD:SRN="+rruGsm.getWartosc("Subrack No."));
+                                        onlyRRU=true;
+                                    }
+                                }
+                                if(onlyRRU)
+                                {
+                                    this.sektoryNaStacji.get(w).setGsmStandAllone(true);
+                                   this.sektoryNaStacji.get(w).setRruOnlyGsm(selectedRRU);
+                                    this.sektoryNaStacji.get(w).addKomorki(getGcell(azymutFromCell, pasmo, gcell_lcs, gcell, trxLst, bindLocGrpLst, BtsLocGrpLst, this.sektoryNaStacji.get(w).getSRNs(), this.sektoryNaStacji.get(w).getSRN2Gs(), north));
+                                    System.out.println("GSM STAND ALONE:" + azymutFromCell + ";" + pasmo); 
+                                }
+                            }
+                        }
+                    }
+                   
+
                  
-                
-            }
+                }
+            
         }
         
         
@@ -401,12 +441,6 @@ public class SectorFactory
                             pasmoTmp="900";
                         if(pasmo.equals(pasmoTmp))
                         {
-                            
-                          
-                            
-                            
-                            
-                            
                             KomorkaGsm gcell=new pem_lte.KomorkaGsm(cellInd);
                             gcell.setKontrolerName(this.bscName);
                             gcell.setNeName(this.BtsName);
@@ -421,11 +455,10 @@ public class SectorFactory
                                 if(cellInd.equals(Cell_IndexFromTRX))
                                 {
                                     gcell.setLstTrx(lstTrx.get(t));
-                                    
                                 }
                             }                           
                             gcell.setLstGtrxDev(lstGTrxDev);
-                             found=true;
+                            found=true;
                             for (int bb = 0; bb < BtsLocGrpLst.size(); bb++)
                             {
                                 String btsLocIndex=BtsLocGrpLst.get(bb).getWartosc("Cell Index");
@@ -438,13 +471,11 @@ public class SectorFactory
                                     gcell.setLocGr(true);
                                     gcell.setMainLocGr(main);
                                    // System.out.println("*********ZBINDOWANIE NIEZBIDNOWANEJ\r\n"+gcell.toString());
-                                     found=false;
-                                    
-                                }
-                               
+                                     found=false;                                    
+                                }                               
                             }
                             if(found)
-                            kom.add(gcell);
+                                kom.add(gcell);
                            
                             //System.out.println("###########\r\n###################\r\n###############\r\n"+gcell);
                         }
@@ -454,17 +485,15 @@ public class SectorFactory
             
             ///
         }
-         boolean LocGrEx=false;
+        boolean LocGrEx=false;
         if(!found)
         {
-           LocGrEx=true;
+            LocGrEx=true;
             for(int b=0;b<BtsLocGrpLst.size();b++)
             {
                 String cellInd=BtsLocGrpLst.get(b).getWartosc("Cell Index");
-                
-                
                 String LocGr=BtsLocGrpLst.get(b).getWartosc("Location Group No.");
-                 boolean main = BtsLocGrpLst.get(b).getWartosc("Is Main Local Group").equalsIgnoreCase("YES");
+                boolean main = BtsLocGrpLst.get(b).getWartosc("Is Main Local Group").equalsIgnoreCase("YES");
                 //System.out.println("cellInd="+cellInd+" LocGr="+LocGr+" mainLocGr="+main);
                 boolean firstMatch=false;
                 
@@ -472,9 +501,8 @@ public class SectorFactory
                 
                 
                 String idle=north.make(this.bscName, "LST GCELLIDLEBASIC: IDTYPE=BYID,CELLID="+cellInd);
-           java.util.ArrayList<Paczka> lstGidle=(new NPack(idle,NPack.FORMAT_POZIOMY)).getAllPacks();
-           listF.dopisz(idle+"\r\n");
-           
+                java.util.ArrayList<Paczka> lstGidle=(new NPack(idle,NPack.FORMAT_POZIOMY)).getAllPacks();
+                listF.dopisz(idle+"\r\n");
                 for(int g=0;g<lstGcell.size();g++)
                 {
                     
@@ -635,8 +663,14 @@ public class SectorFactory
                         srn.add(srnV);
                         String odp=north.make(this.NeName, "DSP RRU:SN="+snV+",SRN="+srnV+",CN="+cnV);
                         listF.dopisz(odp+"\r\n");
+                        java.util.ArrayList<Paczka> listaTmp=null;
                         
-                        java.util.ArrayList<Paczka> listaTmp=(new NPack(odp,NPack.FORMAT_PIONOWY)).getAllPacks();
+                        if(odp.contains("AARU does not support this function"))
+                        {
+                            odp=north.make(this.NeName, "DSP AARU:SN="+snV+",SRN="+srnV+",CN="+cnV);
+                            listF.dopisz(odp+"\r\n");
+                        }
+                            listaTmp=(new NPack(odp,NPack.FORMAT_PIONOWY)).getAllPacks();
                         
                         String workMode=null;
                         for(int g=0;g<lstRRU.size();g++)
@@ -700,7 +734,6 @@ public class SectorFactory
                                     {
                                         if(!usedSubracks.contains(trx.getWartosc("Subrack No.")))
                                         usedSubracks.add(trx.getWartosc("Subrack No."));
-                                        
                                     }
                                 }
                             }
@@ -718,8 +751,7 @@ public class SectorFactory
         }
         return rruSubList;
     }
-    
-    
+        
     private java.util.ArrayList<Paczka> getSectEqLst(String sektorId,java.util.ArrayList<Paczka> sectorEqLst,NorthB north,String pasmo) throws NBIAnsException
     {
         java.util.ArrayList<Paczka> secDet=new java.util.ArrayList<Paczka>();
@@ -819,11 +851,7 @@ public class SectorFactory
                 ecell.setLstCell(ecellSDet.get(e));
                 ecell.setSeqEqId(sektorEq);
                 String findRel="select  'LTE2LTE' as typRelacji, e.ne_name,p.locell_id as locell_id_wychodzacy,rel.cell_name_wychodzacy,rel.enodebId_stacji_PEM,cellId_komorki_PEM,rel.ext_ecell_name as cellName_komorki_PEM,rel.inter_intra from (select    source_enodeb_ident as EnodebIdent_wychodzacy,source_ecell_name as cell_name_wychodzacy,source_ecell_ident ,ext_enode_Id as enodebId_stacji_PEM,ext_ecell_Id as cellId_komorki_pem , ext_ecell_name,typ as inter_intra from  raport_konfiguracja_aktualna.xml_eu_ncell_ident  where NoHoFlag=0 and  ext_ecell_ident=(select ecell_ident from raport_konfiguracja_aktualna.xml_ecell_ident  where enodeb_ident=(select enodeb_ident from raport_konfiguracja_aktualna.xml_enodeb_ident  where ne_name='"+this.NeName+"') and ecell_id='"+ecellSDet.get(e).getWartosc("Cell ID")+"'))as rel left join raport_konfiguracja_aktualna.xml_enodeb_ident e on(e.enodeb_ident=rel.EnodebIdent_wychodzacy) left join raport_konfiguracja_aktualna.xml_ecell_param p on(p.ecell_ident=rel.source_ecell_ident);";
-               
-                
                 String relacje2G="select l.*,r.Rnc_Bsc_Name from  (select   e.EXTLTECELLID,e.bsc_index from raport_konfiguracja_aktualna.GEXTLTECELL_perBsc e where e.EXTLTECELLNAME like '%"+ecell.getName()+"%') as externale left join raport_konfiguracja_aktualna.GLTENCELL_perBSC l on(externale.EXTLTECELLID=l.NBRLTENCELLID and externale.bsc_index=l.bsc_index) left join oncall.konfiguracja_aktualna_rnc_bsc r on(l.bsc_index=r.Rnc_Bsc_Index) where r.Rnc_Bsc_Name is not null";
-               
-                
                 if(!this.onlyCheck&&!changePower)
                 {
                      OdpowiedzSQL rel2G=testStatement.wykonajZapytanie(relacje2G);
@@ -837,7 +865,7 @@ public class SectorFactory
                     // System.out.println(relacje); 
                     listF.dopisz(relacje.toString()+"\r\n");
                     ecell.setRelationToCell(relacje);
-                    
+                    //WAR2074
                     String externaleLteNaRnc=mml.getFirstLine(new String[]{"ADD ULTECELL:",ecell.getName()}, new String[]{});
                     if(externaleLteNaRnc.length()>0&&externaleLteNaRnc.contains("LTECELLINDEX"))
                     {
@@ -953,8 +981,6 @@ public class SectorFactory
                         ucell.setRelationToCell(getRelacjeUmt2Umts(cellId));
                         ucell.setRelacjeLte2Umts( getRelacjeLte2Umts(cellId,this.rncId));
                     }
-                    
-                    
                     String lstAcc=north.make(this.rncName, "LST UCELLACCESSSTRICT: CELLID="+cellId+";");
                     java.util.ArrayList<Paczka> ucellAcc=(new NPack(lstAcc,NPack.FORMAT_PIONOWY)).getAllPacks();
                     listF.dopisz(lstAcc+"\r\n");                    
