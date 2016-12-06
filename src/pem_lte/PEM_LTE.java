@@ -32,7 +32,7 @@ public class PEM_LTE
      */
     public static void main(String[] args) throws SQLException, IOException
     {
-        boolean onlyCheck=true;
+        boolean onlyCheck=false;
         boolean powerChange=false;
         boolean powerChangeNbi=false;
         java.util.ArrayList<String> changePowerCommands=new java.util.ArrayList<String>();

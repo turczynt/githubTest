@@ -134,7 +134,9 @@ public class SectorFactory
               for(Paczka singRRU:rruL)
                  {
                     // System.out.println("USED SRN="+singRRU.getWartosc("Subrack No."));
-                     usedSRN.add(singRRU.getWartosc("Subrack No."));
+                     String workMode=singRRU.getWartosc("RF Unit Working Mode");
+                     if(workMode.contains("LTE")||workMode.contains("UMTS"))
+                        usedSRN.add(singRRU.getWartosc("Subrack No."));
                  }
          }
          java.util.ArrayList<Paczka> rruOnBts=new java.util.ArrayList<Paczka>();
@@ -915,8 +917,8 @@ public class SectorFactory
 	    for(int r=0;r<relacjeIntERCell.length;r++)
 	    {
 		if(!relacje.contains(relacjeIntERCell[r]))
-                {   relacje.add(relacjeIntERCell[r]);
-                    
+                {   
+                    relacje.add(relacjeIntERCell[r]);                    
                 }
                 // RMV UINTERFREQNCELL:RNCID=43,CELLID=123,NCELLRNCID=43,NCELLID=456;
 	    }
