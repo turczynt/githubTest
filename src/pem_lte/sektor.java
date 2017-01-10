@@ -41,6 +41,7 @@ public class sektor
    String tiltStart;
    String tiltStop;
    boolean onlyCheck;
+   double mocPozostalaDoUstawienia;
    
    //Connection connection;
    //Statement testStatement;
@@ -52,6 +53,7 @@ public class sektor
         this.bscName=bscName;
         this.BtsName=BtsName;
         this.NeName=NeName;
+        
         this.mocAsOs=mocAsOs;
         this.valuOutOfRange=false;
         this.errors="";
@@ -294,7 +296,7 @@ public class sektor
         }
         return srns;
     }
-    public void preparePowerToSetNormal()
+    public double preparePowerToSetNormal(double mocPozostalaDoUstawienia)
     {
         //this.komorki
         for(int z=0;z<this.rru.size();z++)
@@ -348,28 +350,30 @@ public class sektor
             maxAllEq=maxAllRRU;
         
   
-        
-        if((this.mocAsOs*(1.0-tolerancja))>maxAllRRU||(this.mocAsOs*(1.0-tolerancja))>maxAllEq)
+        double sumaryPowToSet=mocPozostalaDoUstawienia;
+        double sumaMocy=0.0;
+       /* if((mocPozostalaDoUstawienia*(1.0-tolerancja))>maxAllRRU||(mocPozostalaDoUstawienia*(1.0-tolerancja))>maxAllEq)
         {
             //System.out.println("Moc do ustawienia="+this.mocAsOs+"("+(this.mocAsOs*(1.0-tolerancja))+") przekracza mozliwosci sprzetowe.Konf RRU maxPow="+maxAllRRU+", Konf SecEq maxPow="+maxAllEq);
-            valuOutOfRange=true;
-            errors=errors+"Moc do ustawienia="+this.mocAsOs+"("+(this.mocAsOs*(1.0-tolerancja))+").Konfiguracja RRU umozliwia="+maxAllRRU+", Konfiguracja SektorEq umozliwia="+maxAllEq+"\r\n";
+           // valuOutOfRange=true;
+            errors=errors+"Moc do ustawienia="+mocPozostalaDoUstawienia+"("+(mocPozostalaDoUstawienia*(1.0-tolerancja))+").Konfiguracja RRU umozliwia="+maxAllRRU+", Konfiguracja SektorEq umozliwia="+maxAllEq+"\r\n";
         }
-        else
+        else*/
         {
             
-            double sumaryPowToSet=this.mocAsOs;
-            if((this.mocAsOs)>maxAllRRU)
+            
+            if((mocPozostalaDoUstawienia)>maxAllRRU)
                 sumaryPowToSet=maxAllRRU;
             
-            if((this.mocAsOs)>maxAllEq)
+            if((mocPozostalaDoUstawienia)>maxAllEq)
                 sumaryPowToSet=maxAllEq;
             
                 
             
             for(int a=0;a<this.komorki.size();a++)
             {
-                String eqId=this.komorki.get(a).getPosition();               
+                String eqId=this.komorki.get(a).getPosition();       
+                
                 String srnId=null;
                 boolean locGr=false;                
                 for(int e=0;e<this.sectorEqDet.size()&&srnId==null;e++)
@@ -421,7 +425,7 @@ public class sektor
                            sumaryPowToSet=sumaryPowToSet-powToSetOnCell;
                        }
                    }
-                   if(powToSetOnCell<this.mocAsOs*(tolerancja))
+                   if(powToSetOnCell<mocPozostalaDoUstawienia*(tolerancja))
                    {
                        powToSetOnCell=0.0;
                        //sumaryPowToSet=0.0;
@@ -435,11 +439,15 @@ public class sektor
                             this.komorki.get(a).setPowerToSet(powToSetOnCell);
                    }
                    else
+                   {
                        this.komorki.get(a).setPowerToSet(powToSetOnCell);                 
+                       sumaMocy=sumaMocy+powToSetOnCell;
+                   
+                   }
                 }
 
             }
-            if(sumaryPowToSet<this.mocAsOs*(tolerancja))
+            if(sumaryPowToSet<mocPozostalaDoUstawienia*(tolerancja))
             {
                  sumaryPowToSet=0.0;
                        //sumaryPowToSet=0.0;
@@ -452,43 +460,66 @@ public class sektor
                    {
                       // System.out.println("#################################ZWALONE MAIMO 4X NIE WIEM JAK ALE DZIALA###########################\r\n ");
                        this.komorki.get(0).setPowerToSet(this.komorki.get(0).getPowerToSet()+sumaryPowToSet);
+                       sumaMocy=sumaMocy+this.komorki.get(0).getPowerToSet();
+                       //sumaryPowToSet=sumaryPowToSet-this.komorki.get(0).getPowerToSet();
+                       //return 0.0;
                    }
                    else
                    {
-                       valuOutOfRange=true;
-                    errors=errors+"MIMO4x4: 2xRRU,1seqEQ,1 KomorkaMoc do ustawienia="+this.mocAsOs+"W przekracza mozliwosci sprzetowe.Po podziale mocy per komorki("+this.komorki.get(0).getPowerToSet()+") pozostalo="+sumaryPowToSet+"W .Konfiguracja RRU umozliwia="+maxAllRRU+"W, Konfiguracja SektorEq umozliwia="+maxAllEq+"W\r\n";
+                       //valuOutOfRange=true;
+                       errors=errors+"MIMO4x4: 2xRRU,1seqEQ,1 KomorkaMoc do ustawienia="+this.mocAsOs+"W przekracza mozliwosci sprzetowe.Po podziale mocy per komorki("+this.komorki.get(0).getPowerToSet()+") pozostalo="+sumaryPowToSet+"W .Konfiguracja RRU umozliwia="+maxAllRRU+"W, Konfiguracja SektorEq umozliwia="+maxAllEq+"W\r\n";
                 
                    }
                 
                 }
                else
                 {
-                valuOutOfRange=true;
+                //valuOutOfRange=true;
                 errors=errors+"Moc do ustawienia="+this.mocAsOs+"W przekracza mozliwosci sprzetowe.Po podziale mocy per komorki pozostalo="+sumaryPowToSet+"W .Konfiguracja RRU umozliwia="+maxAllRRU+"W, Konfiguracja SektorEq umozliwia="+maxAllEq+"W\r\n";
                 }
             }
         }
-       
+       return mocPozostalaDoUstawienia-sumaMocy;
         
         
     }
     
     public void preparePowerToSet()
     {
-        if(this.gsmStandAllone)
-        {
-            System.out.println(this.azymut+" "+this.pasmo+" PROCEDURA GSMSTANDALLONE");
-            preparePowerToSetGsmStandAllone();
-        }
-        else
-           preparePowerToSetNormal(); 
+        this.mocPozostalaDoUstawienia=this.getMocAsOs();
+        //if(this.gsmStandAllone)
+        //{
+          //  System.out.println(this.azymut+" "+this.pasmo+" PROCEDURA GSMSTANDALLONE");
+           
+        //}
+        //else
+        System.out.println("##################### podzial MOCY START##################");
+        System.out.println("before preparePowertTosetNormal="+mocPozostalaDoUstawienia);
+          mocPozostalaDoUstawienia= preparePowerToSetNormal(mocPozostalaDoUstawienia); 
+          System.out.println("before preparePowertTosetGSMSTANDALLONE="+mocPozostalaDoUstawienia);
+          if(mocPozostalaDoUstawienia>0.0)// && this.gsmStandAllone)
+            mocPozostalaDoUstawienia=preparePowerToSetGsmStandAllone(mocPozostalaDoUstawienia);
+           System.out.println("after preparePowertTosetGSMSTANDALLONE="+mocPozostalaDoUstawienia+" przy mini dopuszczalnym="+(this.getMocAsOs()*(1.0-tolerancja)));
+           
+           
+           
+           
+          if(mocPozostalaDoUstawienia>(this.getMocAsOs()*(tolerancja)))
+          {   valuOutOfRange=true;
+            errors=errors+"Moc do ustawienia="+this.mocAsOs+"("+(this.mocAsOs*(1.0-tolerancja))+") przekracza mozliwosci sprzetowe\r\n";
+            for(int i=0;i<this.komorki.size();i++)
+            {
+                errors=errors+"\t komorka:"+this.komorki.get(i).getName()+"("+this.komorki.get(i).getId()+",)["+this.komorki.get(i).getPosition()+"] maksymalna dopuszczalna moc="+this.komorki.get(i).getPowerToSet()+"\r\n";
+            }
+          }
+           
     }
     
-    public void preparePowerToSetGsmStandAllone()
+    public double preparePowerToSetGsmStandAllone(double mocPozostalaDoUstawienia)
     {
         //this.komorki
         //CheckMax
-       System.out.println(this.azymut+" "+this.pasmo+" PROCEDURA GSMSTANDALLONE");
+       System.out.println(this.azymut+" "+this.pasmo+" PROCEDURA GSMSTANDALLONE POZOSTALA MOC DO ROZDYSPONOWANIA="+mocPozostalaDoUstawienia );
         Hashtable<String,Double> maxPowerPerSrn=maxPowPerSrnGsmStandAlonePrepare();
         Hashtable<String,Double> PowerPerSrnTMP=(Hashtable<String,Double>)maxPowerPerSrn.clone();
         
@@ -520,26 +551,28 @@ public class sektor
         
   
         System.out.println("MAX SPRZETOWY="+(maxAllRRU)+" MAX KONFIGURACYJNY="+maxAllEq+" DO USTAWIENIA(3% tolerancji)="+(this.mocAsOs*(1.0-tolerancja)));
-        if((this.mocAsOs*(1.0-tolerancja))>maxAllRRU||(this.mocAsOs*(1.0-tolerancja))>maxAllEq)
+        /*if((this.mocAsOs*(1.0-tolerancja))>maxAllRRU||(this.mocAsOs*(1.0-tolerancja))>maxAllEq)
         {
             //System.out.println("Moc do ustawienia="+this.mocAsOs+"("+(this.mocAsOs*(1.0-tolerancja))+") przekracza mozliwosci sprzetowe.Konf RRU maxPow="+maxAllRRU+", Konf SecEq maxPow="+maxAllEq);
             valuOutOfRange=true;
             errors=errors+"Moc do ustawienia="+this.mocAsOs+"("+(this.mocAsOs*(1.0-tolerancja))+"). Mozliwosci hardware'owe="+maxAllRRU+", z wuzglednieniem aktualnej konfiguracji="+maxAllEq+"\r\n";
         }
-        else
+        else*/
+        double sumaryPowToSet=mocPozostalaDoUstawienia;
         {
             
-            double sumaryPowToSet=this.mocAsOs;
-            if((this.mocAsOs)>maxAllRRU)
+            
+            /*if((mocPozostalaDoUstawienia)>maxAllRRU)
                 sumaryPowToSet=maxAllRRU;
             
-            if((this.mocAsOs)>maxAllEq)
-                sumaryPowToSet=maxAllEq;
+            if((mocPozostalaDoUstawienia)>maxAllEq)
+                sumaryPowToSet=maxAllEq;*/
             
                 
             
             for(int a=0;a<this.komorki.size();a++)
             {
+                
                 String eqId=this.komorki.get(a).getPosition();               
                 String srnId=null;
                 boolean locGr=false;                
@@ -579,7 +612,7 @@ public class sektor
                        }
                        
                    }
-                   if(powToSetOnCell<this.mocAsOs*(tolerancja))
+                   if(powToSetOnCell<mocPozostalaDoUstawienia*(tolerancja))
                    {
                        powToSetOnCell=0.0;
                        //sumaryPowToSet=0.0;
@@ -597,7 +630,7 @@ public class sektor
                 }
 
             }
-            if(sumaryPowToSet<this.mocAsOs*(tolerancja))
+            if(sumaryPowToSet<mocPozostalaDoUstawienia*(tolerancja))
             {
                  sumaryPowToSet=0.0;
                        //sumaryPowToSet=0.0;
@@ -605,15 +638,19 @@ public class sektor
             if(sumaryPowToSet>0.0)
             {
                
-                valuOutOfRange=true;
+                //valuOutOfRange=true;
                 errors=errors+"Moc do ustawienia="+this.mocAsOs+"W przekracza mozliwosci sprzetowe.Po podziale mocy per komorki pozostalo="+sumaryPowToSet+"W .Mozliwosci sprzetowe="+maxAllRRU+"W, Aktualna konfiguracja umozliwia="+maxAllEq+"W\r\n";
                
             }
         }
        
-        
+        return sumaryPowToSet;
         
     }
+    
+    
+    
+    
     public String getErrors()
     {
         return errors;

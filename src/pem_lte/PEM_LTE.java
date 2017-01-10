@@ -109,13 +109,32 @@ public class PEM_LTE
             baza = new Idb(1433, "SqlQuery", "SqlQuery1234", "172.16.35.119",null);//, "UTRAN3.IDB2");
             baza.connectMS();
 
-            String[][] aspemOs =null;
+          //  String[][] aspemOs =null;
             
-            if(powerChange)
+            
+            /* FAKEOWY WNIOSEK ASPEMOS*/
+            
+            String[][] aspemOs =new String[][]{
+             new String[]{ "LAN6002A","0","49.0","10.0","2100","LTE,UMTS"},
+ new String[]{ "LAN6002A","0","52.010145582133724","12.0,12.0","900","GSM,UMTS,GSM"},
+ new String[]{ "LAN6002A","1600","49.0","10.0","2100","LTE,UMTS"},
+ new String[]{ "LAN6002A","1600","52.010145582133724","12.0,12.0","900","GSM,UMTS,GSM"},
+ new String[]{ "LAN6002A","2600","49.0","12.0","2100","LTE,UMTS"},
+ new String[]{ "LAN6002A","2600","52.010145582133724","12.0,12.0","900","GSM,UMTS,GSM"}};
+            
+            
+           /* if(powerChange)
+                aspemOs=baza.pobierzWnioskiChangePower(siteName);
+            else
+                aspemOs=baza.pobierzWnioski(siteName);*/
+            
+            
+            
+          /*  if(powerChange)
                 aspemOs=baza.pobierzWnioskiChangePower(siteName);
             else
                 aspemOs=baza.pobierzWnioski(siteName);
-
+*/
              baza.disconnect();
 
             if (aspemOs.length == 0)
@@ -201,8 +220,8 @@ public class PEM_LTE
                     System.out.println(btsbparams.toString());
                 }
                 
-                 String pathBegin = "/usr/samba/utran/PP/WO/SCRIPTS/PEM/" + System.getProperty("user.name") + "/";
-                // String pathBegin = "C:\\TOOL_PROJECTS\\WO\\" + System.getProperty("user.name") + "\\";
+                 //String pathBegin = "/usr/samba/utran/PP/WO/SCRIPTS/PEM/" + System.getProperty("user.name") + "/";
+                 String pathBegin = "C:\\TOOL_PROJECTS\\WO\\" + System.getProperty("user.name") + "\\";
                 if(onlyCheck)
                     pathBegin="";
                 File katalog = new File(pathBegin + siteName);
@@ -217,7 +236,7 @@ public class PEM_LTE
                 NewFile FileStop = new NewFile(katalog.getAbsolutePath() + "/"+siteName+"_STOP_" + obecnyDzienCzas + ".txt");
                 NewFile listF = new NewFile(listingsPath);
                 NewFile changePower= new NewFile(katalog.getAbsolutePath() + "/"+siteName+"_ChangePowerMML_" + obecnyDzienCzas + ".txt");
-               listF.dopisz(baza.getWnioski().toString() + "\r\n");
+//               listF.dopisz(baza.getWnioski().toString() + "\r\n");
                 
                 
                 

@@ -313,6 +313,14 @@ public class SectorFactory
         //java.util.ArrayList<Paczka> gcell=(new NPack(lstGcell,NPack.FORMAT_POZIOMY)).getAllPacks();
         //azymut [0.1 stopni] pasmo=[800,900,1800,2600]
         //used_azymutPasmo.add(azymut+";"+pasmo);
+        
+        
+        
+        
+        /*
+         * 
+         * PROBA OGARNIECIA GSM STAND ALONE
+         */
         for(int l=0;l<gcell_lcs.size();l++)
         {
             String azymutFromCell=gcell_lcs.get(l).getWartosc("Antenna Azimuth Angle");
@@ -488,7 +496,7 @@ public class SectorFactory
             ///
         }
         boolean LocGrEx=false;
-        if(!found)
+       // if(!found)
         {
             LocGrEx=true;
             for(int b=0;b<BtsLocGrpLst.size();b++)
@@ -564,7 +572,7 @@ public class SectorFactory
                         }
                     }
                 }
-                if(!firstMatch)
+                //if(!firstMatch)
                 {
                     String srn=null;
                     KomorkaGsm gcell=new pem_lte.KomorkaGsm(cellInd);
