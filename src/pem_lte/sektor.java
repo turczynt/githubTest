@@ -493,13 +493,13 @@ public class sektor
            
         //}
         //else
-        System.out.println("##################### podzial MOCY START##################");
-        System.out.println("before preparePowertTosetNormal="+mocPozostalaDoUstawienia);
+        //System.out.println("##################### podzial MOCY START##################");
+        //System.out.println("before preparePowertTosetNormal="+mocPozostalaDoUstawienia);
           mocPozostalaDoUstawienia= preparePowerToSetNormal(mocPozostalaDoUstawienia); 
-          System.out.println("before preparePowertTosetGSMSTANDALLONE="+mocPozostalaDoUstawienia);
+          //System.out.println("before preparePowertTosetGSMSTANDALLONE="+mocPozostalaDoUstawienia);
           if(mocPozostalaDoUstawienia>0.0)// && this.gsmStandAllone)
             mocPozostalaDoUstawienia=preparePowerToSetGsmStandAllone(mocPozostalaDoUstawienia);
-           System.out.println("after preparePowertTosetGSMSTANDALLONE="+mocPozostalaDoUstawienia+" przy mini dopuszczalnym="+(this.getMocAsOs()*(1.0-tolerancja)));
+           //System.out.println("after preparePowertTosetGSMSTANDALLONE="+mocPozostalaDoUstawienia+" przy mini dopuszczalnym="+(this.getMocAsOs()*(1.0-tolerancja)));
            
            
            
@@ -519,7 +519,7 @@ public class sektor
     {
         //this.komorki
         //CheckMax
-       System.out.println(this.azymut+" "+this.pasmo+" PROCEDURA GSMSTANDALLONE POZOSTALA MOC DO ROZDYSPONOWANIA="+mocPozostalaDoUstawienia );
+       //System.out.println(this.azymut+" "+this.pasmo+" PROCEDURA GSMSTANDALLONE POZOSTALA MOC DO ROZDYSPONOWANIA="+mocPozostalaDoUstawienia );
         Hashtable<String,Double> maxPowerPerSrn=maxPowPerSrnGsmStandAlonePrepare();
         Hashtable<String,Double> PowerPerSrnTMP=(Hashtable<String,Double>)maxPowerPerSrn.clone();
         
@@ -537,20 +537,20 @@ public class sektor
           //  System.out.println("SRN"+key+" MOC MAKSYMALNA RRU="+maxPowerPerSrn.get(key));
             maxAllRRU=maxAllRRU+maxPowerPerSrn.get(key);
         }
-          System.out.println("///////////MAKSYMLNE MOCE PER SectorEq Azymut="+this.azymut+" Pasmo="+this.pasmo+" sektor ids="+this.sektors_Id.toString()+"/////////");
+         // System.out.println("///////////MAKSYMLNE MOCE PER SectorEq Azymut="+this.azymut+" Pasmo="+this.pasmo+" sektor ids="+this.sektors_Id.toString()+"/////////");
         Enumeration<String> eqipmenty= maxPowerPerAntPass.keys();
         double maxAllEq=0;
         while(eqipmenty.hasMoreElements())
         {
             String key=eqipmenty.nextElement();
-            System.out.println("SECEQID="+key+" MOC MAKSYMALNA="+maxAllEq);
+           // System.out.println("SECEQID="+key+" MOC MAKSYMALNA="+maxAllEq);
             maxAllEq=maxAllEq+maxPowerPerAntPass.get(key);
         }
         if(maxAllEq>maxAllRRU)
             maxAllEq=maxAllRRU;
         
   
-        System.out.println("MAX SPRZETOWY="+(maxAllRRU)+" MAX KONFIGURACYJNY="+maxAllEq+" DO USTAWIENIA(3% tolerancji)="+(this.mocAsOs*(1.0-tolerancja)));
+        //System.out.println("MAX SPRZETOWY="+(maxAllRRU)+" MAX KONFIGURACYJNY="+maxAllEq+" DO USTAWIENIA(3% tolerancji)="+(this.mocAsOs*(1.0-tolerancja)));
         /*if((this.mocAsOs*(1.0-tolerancja))>maxAllRRU||(this.mocAsOs*(1.0-tolerancja))>maxAllEq)
         {
             //System.out.println("Moc do ustawienia="+this.mocAsOs+"("+(this.mocAsOs*(1.0-tolerancja))+") przekracza mozliwosci sprzetowe.Konf RRU maxPow="+maxAllRRU+", Konf SecEq maxPow="+maxAllEq);
@@ -848,8 +848,8 @@ public class sektor
                     //maxOneTrxPow=20.0; odkomentowac jezeli moc pojedynczego trx ma byc nie wieksza niz
                     
                     String antPassPower=rru.getWartosc("Hardware Maximum Output Power of the TX Channel(Route "+antPass+") (10mW)");
-                    System.out.println("ANTPASS FROM TRX="+antPass);
-                    System.out.println(trx.getNazwy2());;
+                    //System.out.println("ANTPASS FROM TRX="+antPass);
+                    //System.out.println(trx.getNazwy2());;
                     if(!hash.contains(key))
                     {
                         try{

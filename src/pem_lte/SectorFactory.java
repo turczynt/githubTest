@@ -345,7 +345,7 @@ public class SectorFactory
                 }
                 if(pasmo!=null)
                 {
-                    System.out.println("STAND ALONE GSM TEST "+azymutFromCell + ";" + pasmo);
+                   // System.out.println("STAND ALONE GSM TEST "+azymutFromCell + ";" + pasmo);
                     if (!used_azymutPasmo.contains(azymutFromCell + ";" + pasmo))
                     {
                         used_azymutPasmo.add(azymutFromCell + ";" + pasmo);
@@ -355,30 +355,30 @@ public class SectorFactory
                         java.util.ArrayList<Paczka> selectedRRU = findStandAloneRruFitsToBandAzymuth(pasmo, azymutFromCell, rruOnBts, trxLst, gcell, gcell_lcs);
                         sek.setRruOnlyGsm(selectedRRU);
                         sek.addKomorki(getGcell(azymutFromCell, pasmo, gcell_lcs, gcell, trxLst, bindLocGrpLst, BtsLocGrpLst, sek.getSRNs(), sek.getSRN2Gs(), north));
-                        System.out.println("GSM STAND ALONE:" + azymutFromCell + ";" + pasmo);
+                     //   System.out.println("GSM STAND ALONE:" + azymutFromCell + ";" + pasmo);
                         this.sektoryNaStacji.add(sek);
                         
                        
                     }
                     else
                     {
-                        System.out.println("AZYMUT ISTNIEJE W 2G/3G: TEST SRN");
+                        //System.out.println("AZYMUT ISTNIEJE W 2G/3G: TEST SRN");
                         for(int w=0;w<this.sektoryNaStacji.size();w++)
                         {
                             if(this.sektoryNaStacji.get(w).getAzymut().equals(azymutFromCell)&&this.sektoryNaStacji.get(w).getPasmo().equals(pasmo))
                             {
                                 
                                 java.util.ArrayList<String> not2GsrnsUsed=this.sektoryNaStacji.get(w).getSRNs();
-                                System.out.println("ZNALEZIONY AZYMUT/PASMO test SRN:"+not2GsrnsUsed.toString()+" "+not2GsrnsUsed.toArray());
+                               // System.out.println("ZNALEZIONY AZYMUT/PASMO test SRN:"+not2GsrnsUsed.toString()+" "+not2GsrnsUsed.toArray());
                                 java.util.ArrayList<Paczka> selectedRRU = findStandAloneRruFitsToBandAzymuth(pasmo, azymutFromCell, rruOnBts, trxLst, gcell, gcell_lcs);
                                 boolean onlyRRU=false;
                                 for(Paczka rruGsm:selectedRRU)
                                 {
-                                    System.out.println("CHECK:SRN="+rruGsm.getWartosc("Subrack No."));
+                                //    System.out.println("CHECK:SRN="+rruGsm.getWartosc("Subrack No."));
                                     if(!not2GsrnsUsed.contains(rruGsm.getWartosc("Subrack No.")))
                                     {
                                         this.sektoryNaStacji.get(w).addRruOnlyGsm(rruGsm);
-                                        System.out.println("ADD:SRN="+rruGsm.getWartosc("Subrack No."));
+                                  //      System.out.println("ADD:SRN="+rruGsm.getWartosc("Subrack No."));
                                         onlyRRU=true;
                                     }
                                 }
@@ -387,7 +387,7 @@ public class SectorFactory
                                     this.sektoryNaStacji.get(w).setGsmStandAllone(true);
                                    this.sektoryNaStacji.get(w).setRruOnlyGsm(selectedRRU);
                                     this.sektoryNaStacji.get(w).addKomorki(getGcell(azymutFromCell, pasmo, gcell_lcs, gcell, trxLst, bindLocGrpLst, BtsLocGrpLst, this.sektoryNaStacji.get(w).getSRNs(), this.sektoryNaStacji.get(w).getSRN2Gs(), north));
-                                    System.out.println("GSM STAND ALONE:" + azymutFromCell + ";" + pasmo); 
+                                  //  System.out.println("GSM STAND ALONE:" + azymutFromCell + ";" + pasmo); 
                                 }
                             }
                         }
