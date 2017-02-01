@@ -1065,7 +1065,7 @@ public class SectorFactory
                     {
                         String lstEcellPerEQ=north.make(this.NeName, "LST EUCELLSECTOREQM:SECTOREQMID="+secEqId);
                         listF.dopisz(lstEcellPerEQ+"\r\n");
-                        java.util.ArrayList<Paczka> ecellS=new java.util.ArrayList<Paczka>();
+                        java.util.ArrayList<Paczka> ecellS=new java.util.ArrayList<>();
                         if(lstEcellPerEQ.contains("Number of results = 1)"))//listowanie pionowe
                         {
                             ecellS=(new NPack(lstEcellPerEQ,NPack.FORMAT_PIONOWY)).getAllPacks();

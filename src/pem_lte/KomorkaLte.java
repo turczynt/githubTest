@@ -211,7 +211,8 @@ public class KomorkaLte extends Komorka
         try{
             String PA=this.cellDlPcpfschpa.getWartosc("PA for even power distribution(dB)");
             PA=PA.replaceAll("dB", "").trim();
-            
+            if(PA.contains("0"))
+                this.paAct="DB0_P_A";
             if(PA.contains("-3"))
                 this.paAct="DB_3_P_A";
             else if(PA.contains("-4"))
