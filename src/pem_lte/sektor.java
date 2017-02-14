@@ -78,9 +78,6 @@ public class sektor
     {
         this.gsmStandAllone = gsmStandAllone;
     }
-
-    
-    
     
     public ArrayList<Paczka> getSectorEqDet()
     {
@@ -91,7 +88,6 @@ public class sektor
     {
         this.sectorEqDet.addAll(sectorEqDet);
     }
-    
     
     public void setSectorEqDet(Paczka sectorEqDet)
     {
@@ -107,13 +103,12 @@ public class sektor
     {
         this.dspRetSubUnit.addAll(dspRetSubUnit);
     }
+    
     public void addDspRetSubUnit(Paczka dspRetSubUnit)
     {
         this.dspRetSubUnit.add(dspRetSubUnit);
     }
 
-    
-    
     public ArrayList<Paczka> getRru()
     {
         return rru;
@@ -160,7 +155,11 @@ public class sektor
 
     public void setKomorki(ArrayList<Komorka> komorki)
     {
-        this.komorki = komorki;
+        for (int i = 0; i < komorki.size(); i++)
+        {
+            addKom(komorki.get(i));
+        }
+       // this.komorki = komorki;
          this.posortujKomorki();
     }
 
@@ -173,13 +172,16 @@ public class sektor
         }
         this.posortujKomorki();
     }
+    
     private void addKom(Komorka kom)
     {
         if(this.komorki!=null&&kom!=null&&!this.komorki.contains(kom))
-            this.komorki.add(kom);
+        {
+           // if(this.pasmo.equals(kom.getPasmo()))
+                this.komorki.add(kom);
+        }
     }
-    
-    
+        
     public String getAzymut()
     {
         return azymut;
@@ -434,7 +436,13 @@ public class sektor
                    if(powToSetOnCell==0.0)
                    {
                         if(locGr)
+                        {
                             this.komorki.get(a).setPowerToSet(0.1);
+                            if(a>0)
+                            {
+                                this.komorki.get(a-1).setPowerToSet(this.komorki.get(a-1).getPowerToSet()-0.1);
+                            }
+                        }
                         else
                             this.komorki.get(a).setPowerToSet(powToSetOnCell);
                    }
@@ -1061,8 +1069,7 @@ public class sektor
             tmpVal.add((int)( Double.parseDouble(tmp[g])*10));
         }
         this.tiltToSet =tmpVal;
-    }
-    
+    }   
     
     public void setTiltToSetTech(String tiltToSetTech)
     {
@@ -1073,8 +1080,7 @@ public class sektor
             tmpVal.add(tmp[g]);
         }
         this.tiltToSetTech =tmpVal;
-    }
-    
+    }   
     
     public String getSetTiltMML_START()
     {

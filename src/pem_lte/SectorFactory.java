@@ -452,6 +452,7 @@ public class SectorFactory
                         if(pasmo.equals(pasmoTmp))
                         {
                             KomorkaGsm gcell=new pem_lte.KomorkaGsm(cellInd);
+                            gcell.setPasmo(band);
                             gcell.setKontrolerName(this.bscName);
                             gcell.setNeName(this.BtsName);
                             gcell.setLstGcell(lstGcell.get(g));
@@ -543,8 +544,11 @@ public class SectorFactory
                         if(srn3G.contains(srn))
                         {
                             KomorkaGsm gcell=new pem_lte.KomorkaGsm(cellInd);
+                            
                             if(lstGcellSelected!=null)
-                                gcell.setLstGcell(lstGcellSelected);
+                            {  gcell.setLstGcell(lstGcellSelected);
+                                gcell.setPasmo(lstGcellSelected.getWartosc("Freq. Band"));
+                            }
                              for(int t=0;t<lstTrx.size();t++)
                             {
                                 String Cell_IndexFromTRX=lstTrx.get(t).getWartosc("Cell Index");
@@ -577,7 +581,9 @@ public class SectorFactory
                     String srn=null;
                     KomorkaGsm gcell=new pem_lte.KomorkaGsm(cellInd);
                      if(lstGcellSelected!=null)
-                                gcell.setLstGcell(lstGcellSelected);
+                     {        gcell.setLstGcell(lstGcellSelected);
+                      gcell.setPasmo(lstGcellSelected.getWartosc("Freq. Band"));
+                     }
                            
                      for(int t=0;t<lstTrx.size();t++)
                      {
@@ -855,6 +861,7 @@ public class SectorFactory
                 KomorkaLte ecell=new pem_lte.KomorkaLte(ecellSDet.get(e).getWartosc("Cell ID"),subcarierNumber);
                 //findRelations;
                 //.getLinia(new String[]{"ADD ULTECELL:","["+"]"});
+                ecell.setPasmo(ecellSDet.get(e).getWartosc("Frequency band"));
                 ecell.setNeName(NeName);
                 ecell.setKontrolerName(rncName);
                 ecell.setLocallCellId(locellId);
@@ -986,6 +993,7 @@ public class SectorFactory
                     KomorkaUmts ucell=new pem_lte.KomorkaUmts(cellId);
                     ucell.setLocellId(locellId);
                     ucell.setLstCell(ucellSDet.get(0));
+                    ucell.setPasmo(ucellSDet.get(0).getWartosc("UL Frequency Channel Number"));
                     if(!this.onlyCheck&&!changePower)
                     {
                         ucell.setRelationToCell(getRelacjeUmt2Umts(cellId));

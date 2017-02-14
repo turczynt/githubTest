@@ -449,6 +449,30 @@ public class KomorkaUmts extends Komorka
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         this.relacje=(java.util.ArrayList<String>)relacje;
     }
+
+    /**
+     *
+     * @param ulfreq wartosc parametry "UL Frequency Channel Number" z LST ULOCELL:MODE=LOCALCELL,ULOCELLID  zamieniana na 2100/900
+     */
+    @Override
+    public void setPasmo(String ulfreq)
+    {
+        String freq=ulfreq;
+        if(freq!=null&&!freq.trim().equals(""))
+        {
+            int freqI=Integer.parseInt(freq);
+            if(freqI>=9837&&freqI<=9886)
+            {
+                super.setPasmo(Komorka.PASMO_2100);
+                pasmo="2100";
+            }
+            else if(freqI>=2713&&freqI<=2938)
+            {
+                super.setPasmo(Komorka.PASMO_900);
+                pasmo="900";
+            }
+        }
+    }
     
      
     

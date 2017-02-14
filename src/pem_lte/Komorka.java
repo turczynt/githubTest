@@ -13,7 +13,13 @@ import mysqlpackage.OdpowiedzSQL;
 public abstract class Komorka implements Comparable
 {
 
-   
+    static final String PASMO_800="800";
+    static final String PASMO_900="900";
+    static final String PASMO_1800="1800";
+    static final String PASMO_2100="2100";
+    static final String PASMO_2600="2600";
+    
+    
     double powerToSet;
     
     static int KOMORKA_LTE=1;
@@ -21,8 +27,22 @@ public abstract class Komorka implements Comparable
     static int KOMORKA_GSM=3;
     //OdpowiedzSQL relacjeDoKomorki;
     
+    String pasmo;
+
+    public String getPasmo()
+    {
+        return pasmo;
+    }
+
+    public void setPasmo(String pasmo)
+    {
+        this.pasmo = pasmo;
+    }
    
 
+    
+    
+    
     @Override
     public int compareTo(Object o)
     {
@@ -33,7 +53,7 @@ public abstract class Komorka implements Comparable
         {
            return getPriorytet().compareTo(((Komorka)o).getPriorytet());
         }
-
+        
     }
 
     @Override
@@ -119,7 +139,7 @@ public abstract class Komorka implements Comparable
 
     public double getPowerToSet()
     {
-        return powerToSet;
+        return this.powerToSet;
     }
 
    /* void setRelationToCell(OdpowiedzSQL relacje)

@@ -19,6 +19,8 @@ public class KomorkaLte extends Komorka
     String locallCellId;
     String srn;
     
+    boolean sfn;
+    
     OdpowiedzSQL relacjeDoKomorki;
     OdpowiedzSQL relacje2GDoKomorki;
             
@@ -563,6 +565,67 @@ public class KomorkaLte extends Komorka
         this.rsToset=""+Komorka.wat2rsInMiliDbm(powerToSet, Double.parseDouble("1"), subcarierNumber, txNum);
         
     }
-    
-    
+
+    public boolean isSfn()
+    {
+        return sfn;
+    }
+
+    public void setSfn(boolean sfn)
+    {
+        this.sfn = sfn;
+    }
+
+    @Override
+    public int compareTo(Object o)
+    {
+        
+       
+        if(o.getClass()!=this.getClass())
+         return   super.compareTo(o);
+        else
+        {
+            if(this.sfn &&((KomorkaLte)o).isSfn())
+            {
+                    return getId().compareTo(((Komorka)o).getId());
+            }
+            else if(this.sfn)
+                return 1;
+            else if(((KomorkaLte)o).isSfn())
+                return -1;
+            else
+                return getId().compareTo(((Komorka)o).getId());
+        }
+    }
+
+    @Override
+    public String getPasmo()
+    {
+        return super.getPasmo(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     *
+     * @param pasmo podaje frequency Band z komendy LST CELL:LOCALCELLID przyjmujace wartosci[1,3,7,20] ustawia super.pasmo na 800/900/1800/2100/2600
+     */
+    @Override
+    public void setPasmo(String freq)
+    {
+         if(freq.equals("3"))
+         {
+             super.setPasmo(Komorka.PASMO_1800);
+         }
+         else if(freq.equals("1"))
+         {
+             super.setPasmo(Komorka.PASMO_2100);
+         }
+         else if(freq.equals("20"))
+         {
+              super.setPasmo(Komorka.PASMO_800);
+         }
+         else if(freq.equals("7"))
+         {
+             super.setPasmo(Komorka.PASMO_2600);
+         }
+    }
 }
