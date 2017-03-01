@@ -489,8 +489,13 @@ public class PEM_LTE
                         START = START + "\r\n\r\n//////////////azymutAsOs=" + (azymutAsOs/10) + "[stopni] bandAsOs=" + bandAsOs + " mocAsOs=" + mocAsOs + " tiltAsOs=" + tiltAsOs + "////////////\r\n";
                         STOP  = STOP  + "\r\n\r\n//////////////azymutAsOs=" + (azymutAsOs/10) + "[stopni] bandAsOs=" + bandAsOs + " mocAsOs=" + mocAsOs + " tiltAsOs=" + tiltAsOs + "////////////\r\n";
                     }
+                    
+                    
+                   
+                    
+                    
+                    
                     boolean found = false;
-
                     for (int w = 0; w < wnioski.size(); w++)
                     {
                         if (Integer.parseInt(wnioski.get(w).getAzymut()) == azymutAsOs && wnioski.get(w).getPasmo().equals(bandAsOs))
@@ -570,8 +575,64 @@ public class PEM_LTE
                         ERROR = ERROR + "\r\n//##########################################################\r\n//###\tNie istnieje na stacji:azymutAsOs=" + (azymutAsOs/10) + "[stopni] bandAsOs=" + bandAsOs + "\r\n//##########################################################\r\n";
 
                     }
+                    
+                    
+                     
+                    
+                }
+/*
+                 
+                 * SPRAWDZENIE CZY WYSTEPUJA KOMORKI SFNOWE,A JEZELI TAK TO CZY ICH MOC JEST TAKA SAMA:
+                 * 
+                 */
+                ArrayList<KomorkaLte> komorkiSfnowe = new java.util.ArrayList<KomorkaLte>();
+                for (int w = 0; w < wnioski.size(); w++)
+                {
+                    ArrayList<Komorka> komorki = wnioski.get(w).getKomorki();
+                    for (int i = 0; i < komorki.size(); i++)
+                    {
+                        if (komorki.get(i).getPriorytet().equals(Komorka.KOMORKA_LTE))
+                        {
+                            if (((KomorkaLte) komorki.get(i)).isSfn())
+                                komorkiSfnowe.add((KomorkaLte) komorki.get(i));
+                        }
+                    }
                 }
 
+                String sfnErrors="";
+                for (int i = 0; i < komorkiSfnowe.size(); i++)
+                {
+                    String cellNameFirst=komorkiSfnowe.get(i).getName();
+                    
+                    double powerToSetFirst = komorkiSfnowe.get(i).getPowerToSet();
+                    for (int j = i+1; j < komorkiSfnowe.size(); j++)
+                    {
+                        String cellNameSecond=komorkiSfnowe.get(j).getName();
+                        if(cellNameFirst.equalsIgnoreCase(cellNameSecond))
+                        {
+                         double powerToSetSecond = komorkiSfnowe.get(j).getPowerToSet();
+                         if(powerToSetSecond==powerToSetFirst)
+                             ;
+                         else
+                         {
+                             sfnErrors=sfnErrors+"\r\n"+"ROZNE MOCE DO USTAWIENIA,NA KOMORCE SFN'owej "+cellNameSecond+":\r\n\t-eqId="+komorkiSfnowe.get(i).getSeqEqId()+" moc="+komorkiSfnowe.get(i).getPowerToSet()+"\r\n\t-eqId="+komorkiSfnowe.get(j).getSeqEqId()+" moc="+komorkiSfnowe.get(j).getPowerToSet()+"\r\n";
+                         }
+                        }
+                    }
+                }
+                
+                if(!sfnErrors.equals(""))
+                {
+                     if(generateOnlyIfOk)
+                    {
+                        System.out.println(sfnErrors);
+                        System.out.println("STACJA WYMAGA ROZPIECIA SFN'a NA CZAS POMIAROW PEM\r\n\r\n prosba o kontakt z: UTRAN_Operations@play.pl");
+                   
+                        System.exit(0);
+                    }
+                }
+                    
+                    
                 String SYMULACJE = "";
                 for (int a = 0; a < aspemOs.length; a++)
                 {
