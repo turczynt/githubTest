@@ -38,7 +38,7 @@ public class PEM_LTE
         java.util.ArrayList<String> changePowerCommands=new java.util.ArrayList<String>();
         try
         {
-            String siteName = args[0].toUpperCase();//"PLN4460";
+           String siteName = args[0].toUpperCase();//"PLN4460";
             String oryginalSiteName=args[0];
             if(siteName.contains("_"))
             {
@@ -109,32 +109,36 @@ public class PEM_LTE
             baza = new Idb(1433, "SqlQuery", "SqlQuery1234", "172.16.35.119",null);//, "UTRAN3.IDB2");
             baza.connectMS();
 
-            String[][] aspemOs =null;
+          //  String[][] aspemOs =null;
             
             
-            /* FAKEOWY WNIOSEK ASPEMOS
+            /* FAKEOWY WNIOSEK ASPEMOS*/
             
             String[][] aspemOs =new String[][]{
-             new String[]{ "LAN6002A","0","49.0","10.0","2100","LTE,UMTS"},
- new String[]{ "LAN6002A","0","52.010145582133724","12.0,12.0","900","GSM,UMTS,GSM"},
- new String[]{ "LAN6002A","1600","49.0","10.0","2100","LTE,UMTS"},
- new String[]{ "LAN6002A","1600","52.010145582133724","12.0,12.0","900","GSM,UMTS,GSM"},
- new String[]{ "LAN6002A","2600","49.0","12.0","2100","LTE,UMTS"},
- new String[]{ "LAN6002A","2600","52.010145582133724","12.0,12.0","900","GSM,UMTS,GSM"}};
+            
+             new String[]{ "TOM3301","300","49.0","10.0","900","GSM"},
+             new String[]{ "TOM3301","300","52.0","10.0","1800","LTE,UMTS"},
+                        
+             new String[]{ "TOM3301","1200","49.0","10.0","900","GSM,UMTS,GSM"},
+             new String[]{ "TOM3301","1200","49.0","10.0","1800","LTE,UMTS"},
+            
+             new String[]{ "TOM3301","2400","49.0","10.0","900","GSM,UMTS,GSM"},
+             new String[]{ "TOM3301","2400","49.0","10.0","1800","LTE,UMTS"},
+              
+            
+             new String[]{ "TOM3301","3300","49.0","10.0","900","GSM,UMTS,GSM"},
+             new String[]{ "TOM3301","3300","49.0","10.0","1800","LTE,UMTS"}
+            
+              };
+            
+         
             
             
-           */ if(powerChange)
+          /* if(powerChange)
                 aspemOs=baza.pobierzWnioskiChangePower(siteName);
             else
                 aspemOs=baza.pobierzWnioski(siteName);
-            
-            
-            
-           if(powerChange)
-                aspemOs=baza.pobierzWnioskiChangePower(siteName);
-            else
-                aspemOs=baza.pobierzWnioski(siteName);
-
+*/
              baza.disconnect();
 
             if (aspemOs.length == 0)
@@ -236,7 +240,7 @@ public class PEM_LTE
                 NewFile FileStop = new NewFile(katalog.getAbsolutePath() + "/"+siteName+"_STOP_" + obecnyDzienCzas + ".txt");
                 NewFile listF = new NewFile(listingsPath);
                 NewFile changePower= new NewFile(katalog.getAbsolutePath() + "/"+siteName+"_ChangePowerMML_" + obecnyDzienCzas + ".txt");
-              listF.dopisz(baza.getWnioski().toString() + "\r\n");
+         //    listF.dopisz(baza.getWnioski().toString() + "\r\n");
                 
                 
                 
