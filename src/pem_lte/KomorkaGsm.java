@@ -16,7 +16,6 @@ public class KomorkaGsm extends Komorka
 
     final Integer priorytet = Komorka.KOMORKA_GSM;
     String id;
-    String glocellId;
     boolean gsmStandAllone;
     String NeName;
     String kontrolerName;
@@ -35,19 +34,7 @@ public class KomorkaGsm extends Komorka
     java.util.ArrayList<Paczka> lstGtrxDev;
     java.util.ArrayList<Paczka> lstBtsLocgr;
     java.util.ArrayList<Paczka> lstBindLocGr;
-    
-    boolean gulGcell;
     String srn;
-
-    public String getGlocellId()
-    {
-        return glocellId;
-    }
-
-    public void setGlocellId(String glocellId)
-    {
-        this.glocellId = glocellId;
-    }
 
     @Override
     public Integer getPriorytet()
@@ -91,7 +78,6 @@ public class KomorkaGsm extends Komorka
         this.locGr = false;
         this.mainLocGr = false;
         this.gsmStandAllone = false;
-        this.gulGcell=false;
     }
 
     public void setNeName(String NeName)
@@ -132,7 +118,6 @@ public class KomorkaGsm extends Komorka
 
     public void setSrn(String srn)
     {
-         if((this.srn==null||!this.srn.matches("[0-9]+"))&&(srn!=null&&srn.matches("[0-9]+")))
         this.srn = srn;
     }
 
@@ -173,7 +158,6 @@ public class KomorkaGsm extends Komorka
     public void setLstBindLocGr(ArrayList<Paczka> lstBindLocGr)
     {
         this.lstBindLocGr.addAll(lstBindLocGr);
-        if(this.srn==null||!this.srn.matches("[0-9]+"))
         this.srn = this.lstBindLocGr.get(0).getWartosc("Subrack No.");
         this.locGr = true;
     }
@@ -181,7 +165,6 @@ public class KomorkaGsm extends Komorka
     public void setLstBindLocGr(Paczka lstBindLocGr)
     {
         this.lstBindLocGr.add(lstBindLocGr);
-        if(this.srn==null||!this.srn.matches("[0-9]+"))
         this.srn = this.lstBindLocGr.get(0).getWartosc("Subrack No.");
         this.locGr = true;
     }
@@ -224,7 +207,6 @@ public class KomorkaGsm extends Komorka
     public void setLstTrx(ArrayList<Paczka> lstTrx)
     {
         this.lstTrx.addAll(lstTrx);
-         if(this.srn==null||!this.srn.matches("[0-9]+"))
         this.srn = this.lstTrx.get(0).getWartosc("Subrack No.");
 
 
@@ -233,7 +215,6 @@ public class KomorkaGsm extends Komorka
     public void setLstTrx(Paczka lstTrx)
     {
         this.lstTrx.add(lstTrx);
-         if(this.srn==null||!this.srn.matches("[0-9]+"))
         this.srn = this.lstTrx.get(0).getWartosc("Subrack No.");
     }
 
@@ -374,13 +355,9 @@ public class KomorkaGsm extends Komorka
         if (this.powerToSet > 0.0)
         {
             if (!this.locGr || this.mainLocGr)
-            {
-                if(this.gulGcell)
-                    return "STR GTRXBURSTTST:GLOCELLID="+glocellId+",DURATIONHOUR=3;{"+this.NeName+"}\r\n";
-                else
-                    return "STR TRXBURSTTST:OBJECTTYPE=BYCELL,IDTYPE=BYID,CELLID=" + this.id + ",DURATH=3;{" + this.kontrolerName + "}\r\n";
-            }
+                return "STR TRXBURSTTST:OBJECTTYPE=BYCELL,IDTYPE=BYID,CELLID=" + this.id + ",DURATH=3;{" + this.kontrolerName + "}\r\n";
         }
+
         return "";
 
 
@@ -393,12 +370,7 @@ public class KomorkaGsm extends Komorka
         if (this.powerToSet > 0.0)
         {
             if (!this.locGr || this.mainLocGr)
-            {
-                if(this.gulGcell)
-                    return "STP GTRXBURSTTST:GLOCELLID="+glocellId+";{"+this.NeName+"}\r\n";
-                else
-                    return "STP TRXBURSTTST:OBJECTTYPE=BYCELL,IDTYPE=BYID,CELLID=" + this.id + ";{" + this.kontrolerName + "}\r\n";
-            }
+                return "STP TRXBURSTTST:OBJECTTYPE=BYCELL,IDTYPE=BYID,CELLID=" + this.id + ";{" + this.kontrolerName + "}\r\n";
         }
 
         return "";
@@ -445,8 +417,6 @@ public class KomorkaGsm extends Komorka
 
                 String[] wynik = KomorkaGsm.findOptimal(this.powerToSet, this.lstTrx.size());
                 //double[] POWT
-                
-                String gulPowPerTrx=""+(int)Komorka.wat2miliDbm(trxPow);
 
                 for (int t = 0; t < this.lstTrx.size(); t++)
                 {
@@ -458,10 +428,7 @@ public class KomorkaGsm extends Komorka
                         powT = powT.replaceAll("[.]", "_");
                     }
                     String powL = wynik[t].split(";")[1];
-                    if(this.gulGcell)
-                            odp = odp + "SET GTRXDEV:IDTYPE=BYID,TRXID=" + this.lstTrx.get(t).getWartosc("TRX ID")+ ",EGBTSPOWT=" + gulPowPerTrx+ ",POWTUNIT=0_1DBM;{" + this.kontrolerName + "}\r\n";                        
-                    else
-                         odp = odp + "SET GTRXDEV:IDTYPE=BYID,TRXID=" + this.lstTrx.get(t).getWartosc("TRX ID") + ",POWL=" + powL + ",POWT=" + powT + "W,POWTUNIT=W;{" + this.kontrolerName + "}\r\n";
+                    odp = odp + "SET GTRXDEV:IDTYPE=BYID,TRXID=" + this.lstTrx.get(t).getWartosc("TRX ID") + ",POWL=" + powL + ",POWT=" + powT + "W,POWTUNIT=W;{" + this.kontrolerName + "}\r\n";
 
                 }
             }
@@ -469,13 +436,7 @@ public class KomorkaGsm extends Komorka
             {
                 if (trxPow < 0.1)
                     trxPow = 0.1;
-                if(this.gulGcell)
-                {
-                     odp = odp + "MOD BTSLOCGRPE:IDTYPE=BYNAME, BTSNAME=\"" + this.lstBtsLocgr.get(0).getWartosc("BTS Name") + "\",LOCGRPNO=" + this.lstBtsLocgr.get(0).getWartosc("Location Group No.") + ",OUTPUTPOWERUNIT=0_01W,OUTPUTPOWER=" + ((int) (trxPow * 100)) + ";{" + this.kontrolerName + "}\r\n";
-                     //MOD BTSLOCGRPE: IDTYPE=BYID,BTSID=415,LOCGRPNO=20,OUTPUTPOWERUNIT=0_01W,OUTPUTPOWERW=2000;%%
-                }
-                else
-                    odp = odp + "MOD BTSLOCGRP:IDTYPE=BYNAME, BTSNAME=\"" + this.lstBtsLocgr.get(0).getWartosc("BTS Name") + "\",LOCGRPNO=" + this.lstBtsLocgr.get(0).getWartosc("Location Group No.") + ",OUTPUTPOWERUNIT=0_1W,OUTPUTPOWER=" + ((int) (trxPow * 10)) + ";{" + this.kontrolerName + "}\r\n";
+                odp = odp + "MOD BTSLOCGRP:IDTYPE=BYNAME, BTSNAME=\"" + this.lstBtsLocgr.get(0).getWartosc("BTS Name") + "\",LOCGRPNO=" + this.lstBtsLocgr.get(0).getWartosc("Location Group No.") + ",OUTPUTPOWERUNIT=0_1W,OUTPUTPOWER=" + ((int) (trxPow * 10)) + ";{" + this.kontrolerName + "}\r\n";
             }
         }
 
@@ -497,19 +458,15 @@ public class KomorkaGsm extends Komorka
                     Paczka TRX = this.lstGtrxDev.get(t);
                     if (TRX != null)//&&checkIfCellHasAsOs(nameTrx)!=null)
                     {
-                        if(this.gulGcell)
-                            odp = odp + "SET GTRXDEV:IDTYPE=BYID,TRXID=" + TRX.getWartosc("TRX ID") + ",EGBTSPOWT=" + TRX.getWartosc("eGBTS Power Type(0.1dBm)") + ",POWTUNIT=0_1DBM;{" + this.kontrolerName + "}\r\n";
-                        else
-                            odp = odp + "SET GTRXDEV:IDTYPE=BYID,TRXID=" + TRX.getWartosc("TRX ID") + ",POWL=" + TRX.getWartosc("Power Level") + ",POWT=" + TRX.getWartosc("GBTS Power Type(w)") + ",POWTUNIT=W;{" + this.kontrolerName + "}\r\n";
+                        odp = odp + "SET GTRXDEV:IDTYPE=BYID,TRXID=" + TRX.getWartosc("TRX ID") + ",POWL=" + TRX.getWartosc("Power Level") + ",POWT=" + TRX.getWartosc("GBTS Power Type(w)") + ",POWTUNIT=W;{" + this.kontrolerName + "}\r\n";
                     }
                 }
             }
             else
             {
-                 if(this.gulGcell)
-                     odp = odp + "MOD BTSLOCGRPE:IDTYPE=BYNAME, BTSNAME=\"" + this.lstBtsLocgr.get(0).getWartosc("BTS Name") + "\",LOCGRPNO=" + this.lstBtsLocgr.get(0).getWartosc("Location Group No.") + ",OUTPUTPOWERUNIT=0_01W,OUTPUTPOWER=" + this.lstBtsLocgr.get(0).getWartosc("Output Power(0.01W)") + ";{" + this.kontrolerName + "}\r\n";
-                 else
-                    odp = odp + "MOD BTSLOCGRP:IDTYPE=BYNAME, BTSNAME=\"" + this.lstBtsLocgr.get(0).getWartosc("BTS Name") + "\",LOCGRPNO=" + this.lstBtsLocgr.get(0).getWartosc("Location Group No.") + ",OUTPUTPOWERUNIT=0_1W,OUTPUTPOWER=" + this.lstBtsLocgr.get(0).getWartosc("Output Power(0.1W)") + ";{" + this.kontrolerName + "}\r\n";
+
+
+                odp = odp + "MOD BTSLOCGRP:IDTYPE=BYNAME, BTSNAME=\"" + this.lstBtsLocgr.get(0).getWartosc("BTS Name") + "\",LOCGRPNO=" + this.lstBtsLocgr.get(0).getWartosc("Location Group No.") + ",OUTPUTPOWERUNIT=0_1W,OUTPUTPOWER=" + this.lstBtsLocgr.get(0).getWartosc("Output Power(0.1W)") + ";{" + this.kontrolerName + "}\r\n";
             }
 
         }
@@ -518,7 +475,7 @@ public class KomorkaGsm extends Komorka
 
     public String toString()
     {
-        return "System=GSM/DCS Name=" + this.cellName + " CellId=" + this.id + "  active=" + this.isActive() + " UnBlocked=" + this.isUnBlocked() + "  SRN[?]=" + this.getPosition() + " QUASI=" + this.locGr + " Main=" + (this.locGr && this.mainLocGr) + " MOC_DO_USTAWIENIA" + this.powerToSet + "/" + this.lstTrx.size() + "(txNum) GUL="+this.gulGcell;
+        return "System=GSM/DCS Name=" + this.cellName + " CellId=" + this.id + "  active=" + this.isActive() + " UnBlocked=" + this.isUnBlocked() + "  SRN[?]=" + this.getPosition() + " QUASI=" + this.locGr + " Main=" + (this.locGr && this.mainLocGr) + " MOC_DO_USTAWIENIA" + this.powerToSet + "/" + this.lstTrx.size() + "(txNum)";
     }
 
     public boolean isLocGr()
@@ -710,16 +667,6 @@ public class KomorkaGsm extends Komorka
         else if(freqBand.contains("900"))
             super.setPasmo(Komorka.PASMO_900);
        
-    }
-
-    public boolean isGulGcell()
-    {
-        return gulGcell;
-    }
-
-    public void setGulGcell(boolean gulGcell)
-    {
-        this.gulGcell = gulGcell;
     }
     
     

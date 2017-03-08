@@ -109,10 +109,10 @@ public class PEM_LTE
             baza = new Idb(1433, "SqlQuery", "SqlQuery1234", "172.16.35.119",null);//, "UTRAN3.IDB2");
             baza.connectMS();
 
-          //  String[][] aspemOs =null;
+           String[][] aspemOs =null;
             
             
-            /* FAKEOWY WNIOSEK ASPEMOS*/
+            /* FAKEOWY WNIOSEK ASPEMOS
             
             String[][] aspemOs =new String[][]{
             
@@ -129,16 +129,16 @@ public class PEM_LTE
              new String[]{ "TOM3301","3300","49.0","10.0","900","GSM,UMTS,GSM"},
              new String[]{ "TOM3301","3300","49.0","10.0","1800","LTE,UMTS"}
             
-              };
+              };*/
             
          
             
             
-          /* if(powerChange)
+           if(powerChange)
                 aspemOs=baza.pobierzWnioskiChangePower(siteName);
             else
                 aspemOs=baza.pobierzWnioski(siteName);
-*/
+
              baza.disconnect();
 
             if (aspemOs.length == 0)

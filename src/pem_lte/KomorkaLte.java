@@ -70,6 +70,7 @@ public class KomorkaLte extends Komorka
     {
         this.lstCell = lstCell;
         this.name=this.lstCell.getWartosc("Cell Name");
+          this.setSfn(this.lstCell.getWartosc("Mode of Multi-RRU Cell").equalsIgnoreCase("SFN"));
     }
 
     public Paczka getDspCell()
@@ -333,7 +334,7 @@ public class KomorkaLte extends Komorka
     public String toString()
     {
         String odp="";
-        odp=odp+"System=LTE Name="+this.getName() +"CellId="+this.id+" LocallId="+this.locallCellId+" ActPow(PA,PB,RS)="+this.paAct+","+this.pbAct+","+this.rsAct+" OnAir="+this.isActualOnAir()+" EQID="+this.seqEqId+" MOC DO USTAW=(RS="+this.rsToset+",PB=1)";
+        odp=odp+"System=LTE Name="+this.getName() +"CellId="+this.id+" LocallId="+this.locallCellId+" ActPow(PA,PB,RS)="+this.paAct+","+this.pbAct+","+this.rsAct+" OnAir="+this.isActualOnAir()+" EQID="+this.seqEqId+" MOC DO USTAW=(RS="+this.rsToset+",PB=1) SFN="+this.isSfn();
         return odp;
     }
 
