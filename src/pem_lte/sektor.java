@@ -65,7 +65,8 @@ public class sektor
         this.dspRetSubUnit=new java.util.ArrayList<Paczka> ();
         this.onlyCheck=onlyCheck;
         this.gsmStandAllone=false;
-       // preparePowerToSet();        
+       // preparePowerToSet();
+        
     }
 
     public boolean isGsmStandAllone()
@@ -117,37 +118,36 @@ public class sektor
     {
         this.rru = rru;
     }
-    
     public void addRru(ArrayList<Paczka> rru)
     {
         this.rru.addAll(rru);
     }
-    
-    public void addRru(Paczka rru)
+     public void addRru(Paczka rru)
     {
         this.rru.add(rru);
     }
-          
-    public ArrayList<Paczka> getRruOnlyGsm()
+     
+     
+     public ArrayList<Paczka> getRruOnlyGsm()
     {
         return rruOnlyGsm;
     }
 
-    public void setRruOnlyGsm(ArrayList<Paczka> rruOnlyGsm)      
+    public void setRruOnlyGsm(ArrayList<Paczka> rruOnlyGsm)
+            
     {
         this.rruOnlyGsm = rruOnlyGsm;
     }
-    
     public void addRruOnlyGsm(ArrayList<Paczka> rruOnlyGsm)
     {
         this.rruOnlyGsm.addAll(rruOnlyGsm);
     }
-    
-    public void addRruOnlyGsm(Paczka rruOnlyGsm)
+     public void addRruOnlyGsm(Paczka rruOnlyGsm)
     {
         this.rruOnlyGsm.add(rruOnlyGsm);
     }
-          
+     
+     
     public ArrayList<Komorka> getKomorki()
     {
         return komorki;
@@ -288,7 +288,6 @@ public class sektor
         }
         return srns;
     }
-    
     public java.util.ArrayList<String> getSRN2Gs()
     {
         java.util.ArrayList<String> srns=new java.util.ArrayList<String>();
@@ -299,7 +298,6 @@ public class sektor
         }
         return srns;
     }
-    
     public double preparePowerToSetNormal(double mocPozostalaDoUstawienia)
     {
         //this.komorki
@@ -658,16 +656,17 @@ public class sektor
         
     }
     
+    
+    
+    
     public String getErrors()
     {
         return errors;
     }
-    
      public boolean isAllOk()
-     {
-         return !valuOutOfRange;
-     }
-     
+        {
+            return !valuOutOfRange;
+        }
     private Hashtable<String,Double> maxPowPerSrnPrepare()
     {
         Hashtable<String,Double> hash=new Hashtable();
@@ -740,7 +739,8 @@ public class sektor
         }
         return hash;
     }
-        
+    
+    
     private Hashtable<String,Double> maxPowPerSrnGsmStandAlonePrepare()
     {
         Hashtable<String,Double> hash=new Hashtable();
@@ -851,8 +851,7 @@ public class sektor
                     String antPass=trx.getWartosc("Antenna Pass No");
                     String key=srn+";"+antPass;
                     
-                    if(antPass.equals("<NULL>"))
-                        antPass="A";
+                    
                     Double maxOneTrxPow=null;
                     //maxOneTrxPow=20.0; odkomentowac jezeli moc pojedynczego trx ma byc nie wieksza niz
                     

@@ -24,5 +24,4 @@ public class NewMain
         System.out.println("19.9WAT="+Komorka.wat2miliDbm(19.9)+" dbm,");
         System.out.println("40Wat"+Komorka.wat2rsInMiliDbm(40.0, 1, 600, 2));
     }
-    
 }
