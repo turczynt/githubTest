@@ -129,12 +129,14 @@ public class PEM_LTE
              new String[]{ "TOM3301","3300","49.0","10.0","900","GSM,UMTS,GSM"},
              new String[]{ "TOM3301","3300","49.0","10.0","1800","LTE,UMTS"}
             
-              };*/
+              };
             
          
             
-            
-           if(powerChange)
+            */
+           
+           
+          if(powerChange)
                 aspemOs=baza.pobierzWnioskiChangePower(siteName);
             else
                 aspemOs=baza.pobierzWnioski(siteName);
@@ -240,7 +242,7 @@ public class PEM_LTE
                 NewFile FileStop = new NewFile(katalog.getAbsolutePath() + "/"+siteName+"_STOP_" + obecnyDzienCzas + ".txt");
                 NewFile listF = new NewFile(listingsPath);
                 NewFile changePower= new NewFile(katalog.getAbsolutePath() + "/"+siteName+"_ChangePowerMML_" + obecnyDzienCzas + ".txt");
-         //    listF.dopisz(baza.getWnioski().toString() + "\r\n");
+                listF.dopisz(baza.getWnioski().toString() + "\r\n");
                 
                 
                 
