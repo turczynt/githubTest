@@ -397,11 +397,11 @@ public class SectorFactory
                 {
                     used_azymutPasmo.add(azymutFromCell + ";" + pasmo);
                     sektor sek = new pem_lte.sektor(azymutFromCell, pasmo, bscName, BtsName, NeName, onlyCheck);
-
+                     java.util.ArrayList<Paczka> sectorsEqDet=getSectEqLst(null, sectorEqLst, north, pasmo);
                     sek.setGsmStandAllone(true);
                         java.util.ArrayList<Paczka> selectedRRU = findStandAloneRruFitsToBandAzymuth(pasmo, azymutFromCell, rruOnBts, trxLst, gcell, gcell_lcs,null,null,null);
                     sek.setRruOnlyGsm(selectedRRU); 
-                    sek.addKomorki(getGcell(azymutFromCell, pasmo, gcell_lcs, gcell, trxLst, bindLocGrpLst, BtsLocGrpLst, GULBtsLocGrp, sek.getSRNs(), sek.getSRN2Gs(), north, dspGtrxListOnNode, null,sectorLst));
+                    sek.addKomorki(getGcell(azymutFromCell, pasmo, gcell_lcs, gcell, trxLst, bindLocGrpLst, BtsLocGrpLst, GULBtsLocGrp, sek.getSRNs(), sek.getSRN2Gs(), north, dspGtrxListOnNode, sectorsEqDet,sectorLst));
                     //   System.out.println("GSM STAND ALONE:" + azymutFromCell + ";" + pasmo);
                     this.sektoryNaStacji.add(sek);
 
@@ -443,7 +443,6 @@ public class SectorFactory
 
 
             }
-
         }
 
 
@@ -745,7 +744,7 @@ public class SectorFactory
                         if(!quasi||SektorFromLOC.equals(dspGtrxOnNode.get(i).getWartosc("Sector ID")))
                         {
                             gulEq = dspGtrxOnNode.get(i).getWartosc("Sector Equipment ID");
-                            for (int q = 0; gulEq != null && gulSrn == null && q < SectorEqDet.size(); q++)
+                            for (int q = 0; gulEq != null && gulSrn == null &&(SectorEqDet!=null&& q < SectorEqDet.size()); q++)
                             {
                          
                                 if (gulEq.equals(SectorEqDet.get(q).getWartosc("Sector Equipment ID")))
@@ -1092,7 +1091,7 @@ public class SectorFactory
         for(int e=0;e<sectorEqLst.size();e++)
         {
             String secIdFromEq=sectorEqLst.get(e).getWartosc("Sector ID");
-            if(secIdFromEq.equals(sektorId))
+            if(sektorId==null||secIdFromEq.equals(sektorId))
             {
                 String odpSS = north.make(this.NeName, "LST SECTOREQM:SECTOREQMID=" + sectorEqLst.get(e).getWartosc("Sector Equipment ID"));
                 java.util.ArrayList<Paczka> temp;
@@ -1118,8 +1117,8 @@ public class SectorFactory
                     {
                         Paczka tt = temp.get(s);
                         tt.dodaj("Sector Equipment ID", sectorEqLst.get(e).getWartosc("Sector Equipment ID"));
-                        if(sektorId!=null)
-                        tt.dodaj("Sector ID", sektorId);
+                       // if(sektorId!=null)
+                        tt.dodaj("Sector ID", secIdFromEq);
                         secDet.add(tt);
                     }
                 }
