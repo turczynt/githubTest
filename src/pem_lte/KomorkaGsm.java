@@ -475,7 +475,7 @@ public class KomorkaGsm extends Komorka
                     trxPow = 0.1;
                 if(this.gulGcell)
                 {
-                     odp = odp + "MOD BTSLOCGRPE:IDTYPE=BYNAME, BTSNAME=\"" + this.lstBtsLocgr.get(0).getWartosc("BTS Name") + "\",LOCGRPNO=" + this.lstBtsLocgr.get(0).getWartosc("Location Group No.") + ",OUTPUTPOWERUNIT=0_01W,OUTPUTPOWER=" + ((int) (trxPow * 100)) + ";{" + this.kontrolerName + "}\r\n";
+                     odp = odp + "MOD BTSLOCGRPE:IDTYPE=BYNAME, BTSNAME=\"" + this.lstBtsLocgr.get(0).getWartosc("BTS Name") + "\",LOCGRPNO=" + this.lstBtsLocgr.get(0).getWartosc("Location Group No.") + ",OUTPUTPOWERUNIT=0_01W,OUTPUTPOWERW=" + ((int) (trxPow * 100)) + ";{" + this.kontrolerName + "}\r\n";
                      //MOD BTSLOCGRPE: IDTYPE=BYID,BTSID=415,LOCGRPNO=20,OUTPUTPOWERUNIT=0_01W,OUTPUTPOWERW=2000;%%
                 }
                 else
@@ -511,7 +511,7 @@ public class KomorkaGsm extends Komorka
             else
             {
                  if(this.gulGcell)
-                     odp = odp + "MOD BTSLOCGRPE:IDTYPE=BYNAME, BTSNAME=\"" + this.lstBtsLocgr.get(0).getWartosc("BTS Name") + "\",LOCGRPNO=" + this.lstBtsLocgr.get(0).getWartosc("Location Group No.") + ",OUTPUTPOWERUNIT=0_01W,OUTPUTPOWER=" + this.lstBtsLocgr.get(0).getWartosc("Output Power(0.01W)") + ";{" + this.kontrolerName + "}\r\n";
+                     odp = odp + "MOD BTSLOCGRPE:IDTYPE=BYNAME, BTSNAME=\"" + this.lstBtsLocgr.get(0).getWartosc("BTS Name") + "\",LOCGRPNO=" + this.lstBtsLocgr.get(0).getWartosc("Location Group No.") + ",OUTPUTPOWERUNIT=0_01W,OUTPUTPOWERW=" + this.lstBtsLocgr.get(0).getWartosc("Output Power(0.01W)") + ";{" + this.kontrolerName + "}\r\n";
                  else
                     odp = odp + "MOD BTSLOCGRP:IDTYPE=BYNAME, BTSNAME=\"" + this.lstBtsLocgr.get(0).getWartosc("BTS Name") + "\",LOCGRPNO=" + this.lstBtsLocgr.get(0).getWartosc("Location Group No.") + ",OUTPUTPOWERUNIT=0_1W,OUTPUTPOWER=" + this.lstBtsLocgr.get(0).getWartosc("Output Power(0.1W)") + ";{" + this.kontrolerName + "}\r\n";
             }
