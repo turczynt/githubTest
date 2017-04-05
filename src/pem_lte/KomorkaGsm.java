@@ -356,10 +356,25 @@ public class KomorkaGsm extends Komorka
 
         }
         if (this.isActive())
+        {
             if (!this.locGr || this.mainLocGr)
+            {
                 odp = odp + "ACT GCELL: IDTYPE=BYID, CELLID=" + this.id + ", TRXIDTYPE=BYID;{" + this.kontrolerName + "}\r\n";
-            else if (!this.locGr || this.mainLocGr)
+                for (int t = 0; t < this.lstTrx.size(); t++)
+                {
+                    if(this.lstTrx.get(t).getWartosc("Active Status").equals("DEACTIVATED"))
+                    {
+                        odp=odp+"DEA GTRX:IDTYPE=BYID,TRXID="+this.lstTrx.get(t).getWartosc("TRX ID")+";{" + this.kontrolerName + "}\r\n";
+                    }
+                }
+            
+            }
+        }
+        else
+        {
+            if (!this.locGr || this.mainLocGr)
                 odp = odp + "DEA GCELL: IDTYPE=BYID, CELLID=" + this.id + ", TRXIDTYPE=BYID;{" + this.kontrolerName + "}\r\n";
+        }
         //System.out.println("|| CellId="+this.id+" cell_barr_acces="+this.lstGcellIdle.getWartosc("Cell Bar Access")+" isUbared="+this.isUnBarred());
         if (this.isUnBarred())
         {

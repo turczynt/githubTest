@@ -719,7 +719,7 @@ public class SectorFactory
             {
 
                 String gulEq = null;
-            String gulSrn = null;
+                String gulSrn = null;
             
                 String SektorFromLOC=null;
                         
@@ -856,10 +856,17 @@ public class SectorFactory
                                     gcell.setMainLocGr(qu==0);
                                 }
                             
+                                if(gulSrn==null||gulSrn.equals(""))
+                                {
+                                    System.out.println("Nie znaleziono SRN dla GUL CELLI="+gcell.getId()+" glocell="+gcell.getGlocellId()+" gulEq="+gulEq+" GULSektorFromLOC="+SektorFromLOC+" azymutFromCell="+azymutFromCell+" azymut from wniosek="+azymut);
+                                }
+                               else
+                                {
                                 gcell.setSrn(gulSrn);
                                 System.out.println("srn="+gulSrn+" \r\n"+gcell.toString());
 
                                 kom.add(gcell);
+                                }
                   
                             
                             }
