@@ -373,7 +373,7 @@ public class KomorkaGsm extends Komorka
         else
         {
             if (!this.locGr || this.mainLocGr)
-                odp = odp + "DEA GCELL: IDTYPE=BYID, CELLID=" + this.id + ", TRXIDTYPE=BYID;{" + this.kontrolerName + "}\r\n";
+                odp = odp + "DEA GCELL: IDTYPE=BYID, CELLID=" + this.id + ";{" + this.kontrolerName + "}\r\n";
         }
         //System.out.println("|| CellId="+this.id+" cell_barr_acces="+this.lstGcellIdle.getWartosc("Cell Bar Access")+" isUbared="+this.isUnBarred());
         if (this.isUnBarred())

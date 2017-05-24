@@ -352,12 +352,6 @@ public class KomorkaLte extends Komorka
     {
         this.kontrolerName = kontrolerName;
     }
-
-
-
-    
-    
-    
     
     //////generowanie komend MML
     @Override

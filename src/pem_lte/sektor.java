@@ -645,6 +645,9 @@ public class sektor
                  sumaryPowToSet=0.0;
                        //sumaryPowToSet=0.0;
             }
+            else if(sumaryPowToSet<(tolerancja*this.mocAsOs))
+                sumaryPowToSet=0.0;
+                
             if(sumaryPowToSet>0.0)
             {
                

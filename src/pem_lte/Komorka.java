@@ -113,7 +113,6 @@ public abstract class Komorka implements Comparable
     
     public static double wat2miliDbm(String wat)
     {
-        
         return wat2miliDbm(Double.parseDouble(wat));
     }
     

@@ -111,10 +111,7 @@ public class NBISender
                 
             }
             this.logs.dopisz("\r\n\r\n#######################LICZBA BLEDOW="+this.licznikBledow);
-        }
-              
-                
-             
+        }    
         
         return this.allCommandSucceded;
     }
