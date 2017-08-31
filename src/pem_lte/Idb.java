@@ -27,7 +27,7 @@ public class Idb
     String ip;
     String URL;
     Connection con;
-    String CatalogName;
+    String catalogName;
     Statement stmt;
     boolean connectionSucced;
     int port;
@@ -43,7 +43,7 @@ OdpowiedzSQL wnioksi;
         //jdbc:mysql://172.16.5.52:3306
 	
 
-	this.CatalogName = CatalogName;
+	this.catalogName = CatalogName;
 
     }
 
@@ -56,7 +56,7 @@ OdpowiedzSQL wnioksi;
 	//URL="jdbc:sybase:Tds:"+ip+":4100";
 	this.URL = null;
 
-	this.CatalogName = null;
+	this.catalogName = null;
 
     }
 
@@ -70,9 +70,9 @@ OdpowiedzSQL wnioksi;
 	
 	    this.con = DriverManager.getConnection(URL, login, paswd);
 	    //conn = DriverManager.getConnection("jdbc:mysql://172.16.5.38:3306/oncall?user=" + login + "&password=" + pass + "&useUnicode=yes&characterEncoding=UTF-8");
-	    if (CatalogName != null)
+	    if (catalogName != null)
 	    {
-		this.con.setCatalog(CatalogName);
+		this.con.setCatalog(catalogName);
 	    }
 	    this.stmt = con.createStatement();
 	    connectionSucced = true;
@@ -94,9 +94,9 @@ OdpowiedzSQL wnioksi;
 	  
 	    this.con = DriverManager.getConnection(URL, login, paswd);
 	    //conn = DriverManager.getConnection("jdbc:mysql://172.16.5.38:3306/oncall?user=" + login + "&password=" + pass + "&useUnicode=yes&characterEncoding=UTF-8");
-	    if (CatalogName != null)
+	    if (catalogName != null)
 	    {
-		this.con.setCatalog(CatalogName);
+		this.con.setCatalog(catalogName);
 	    }
 	    this.stmt = con.createStatement();
 	    connectionSucced = true;
