@@ -72,8 +72,23 @@ public class NBISender
                             }
                             else
                             {
-                                this.licznikBledow++;
-                                System.out.println("\r\n"+out);
+                                System.out.println(out+"\r\nSLEEP 10s and try again\r\n");
+                                printWriter.println(out+"\r\nSLEEP 10s and try again\r\n");
+                                Thread.sleep(10000);
+                                out= this.north.MakeWithReg(this.commands.get(c));
+                           
+                                printWriter.println(out+"\r\n");
+                                if(out.contains("RETCODE = 0"))
+                                {
+                                    System.out.println("RETCODE = 0 [succeeded]");
+                                }
+                                else
+                                {
+
+                                    this.licznikBledow++;
+                                    System.out.println("\r\n"+out);
+                                }
+                                
                             }
                             
                         }

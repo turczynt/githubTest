@@ -339,6 +339,7 @@ OdpowiedzSQL wnioksi;
         System.out.println(wnioski);
         return wnioski;
     }
+    
     public String[][] pobierzWnioski(String siteShortName)           
     {
         this.wnioksi=pobierzWnioskiZAsPemOs(siteShortName);
@@ -375,6 +376,5 @@ OdpowiedzSQL wnioksi;
     {
         return wnioksi;
     }
-            
- 
+    
 }

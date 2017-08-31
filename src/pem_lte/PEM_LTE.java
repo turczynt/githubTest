@@ -179,6 +179,8 @@ public class PEM_LTE
                 String req2G = "select m.M2000_Name,m.M2000_Ip,r.Rnc_Bsc_Id,r.Rnc_Bsc_Name,b.Bts_Id,b.Bts_Name from oncall.konfiguracja_aktualna_bts b left join oncall.konfiguracja_aktualna_rnc_bsc r on(b.Rnc_Bsc_Index=r.Rnc_Bsc_Index) left join oncall.konfiguracja_aktualna_m2000 m on(r.M2000_Index=m.M2000_Index) where b.Bts_Name like '%" + siteName + "%';";
                 OdpowiedzSQL btsbparams =bazaOncall.wykonajZapytanie(req2G);
 
+                
+                
                 String m2000Ip = null;
                 String rncName = null;
                 String rncId = null;
