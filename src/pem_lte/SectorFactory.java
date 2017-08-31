@@ -32,7 +32,7 @@ public class SectorFactory
     String rncName;
     String rncId;
     String bscName;
-    String BtsName;
+    String btsName;
     String NeName;
     NorthB north;
     Idb testStatement;
@@ -54,7 +54,7 @@ public class SectorFactory
             this.m2000Ip = m2000Ip;
             this.rncName = rncName;
             this.bscName = bscName;
-            this.BtsName = BtsName;
+            this.btsName = BtsName;
             this.NeName = NeName;
             this.onlyCheck = onlyCheck;
             this.nodebName = nodebName;
@@ -73,9 +73,9 @@ public class SectorFactory
     {
         north = new NorthB(this.m2000Ip, "U-boot", "utranek098", null);
 
-        String lstGcelllcs = north.make(this.bscName, "LST GCELLLCS: IDTYPE=BYNAME,BTSNAME=\"" + this.BtsName + "\"");
+        String lstGcelllcs = north.make(this.bscName, "LST GCELLLCS: IDTYPE=BYNAME,BTSNAME=\"" + this.btsName + "\"");
 
-        String lstGcell = north.make(this.bscName, "LST GCELL:IDTYPE=BYNAME,BTSNAME=\"" + this.BtsName + "\"");
+        String lstGcell = north.make(this.bscName, "LST GCELL:IDTYPE=BYNAME,BTSNAME=\"" + this.btsName + "\"");
         java.util.ArrayList<Paczka> gcell_lcs = (new NPack(lstGcelllcs, NPack.FORMAT_POZIOMY)).getAllPacks();
         java.util.ArrayList<Paczka> gcell = (new NPack(lstGcell, NPack.FORMAT_POZIOMY)).getAllPacks();
 
@@ -83,20 +83,20 @@ public class SectorFactory
         listF.dopisz(lstGcell + "\r\n");
 
 
-        String trx = north.make(this.bscName, "LST GTRX:IDTYPE=BYNAME,BTSNAME=\"" + this.BtsName + "\"");
+        String trx = north.make(this.bscName, "LST GTRX:IDTYPE=BYNAME,BTSNAME=\"" + this.btsName + "\"");
         listF.dopisz(trx + "\r\n");
         NPack trxPack = new NPack(trx, NPack.FORMAT_POZIOMY);
         java.util.ArrayList<Paczka> trxLst = trxPack.getAllPacks();
 
-        String bindLocGrp = north.make(this.bscName, "LST BTSBINDLOCGRP: IDTYPE=BYNAME,BTSNAME=\"" + this.BtsName + "\"");
+        String bindLocGrp = north.make(this.bscName, "LST BTSBINDLOCGRP: IDTYPE=BYNAME,BTSNAME=\"" + this.btsName + "\"");
         listF.dopisz(bindLocGrp + "\r\n");
         java.util.ArrayList<Paczka> bindLocGrpLst = (new NPack(bindLocGrp, NPack.FORMAT_POZIOMY)).getAllPacks();
 
-        String BtsLocGrp = north.make(this.bscName, "LST BTSLOCGRP: IDTYPE=BYNAME,BTSNAME=\"" + this.BtsName + "\"");
+        String BtsLocGrp = north.make(this.bscName, "LST BTSLOCGRP: IDTYPE=BYNAME,BTSNAME=\"" + this.btsName + "\"");
         listF.dopisz(BtsLocGrp + "\r\n");
         java.util.ArrayList<Paczka> BtsLocGrpLst = (new NPack(BtsLocGrp, NPack.FORMAT_POZIOMY)).getAllPacks();
 
-        String GULBtsLocGrpStr = north.make(this.bscName, "LST BTSLOCGRPE: IDTYPE=BYNAME,BTSNAME=\"" + this.BtsName + "\"");
+        String GULBtsLocGrpStr = north.make(this.bscName, "LST BTSLOCGRPE: IDTYPE=BYNAME,BTSNAME=\"" + this.btsName + "\"");
         listF.dopisz(GULBtsLocGrpStr + "\r\n");
         java.util.ArrayList<Paczka> GULBtsLocGrp = (new NPack(GULBtsLocGrpStr, NPack.FORMAT_POZIOMY)).getAllPacks();
 
@@ -178,7 +178,7 @@ public class SectorFactory
             }
         }
         java.util.ArrayList<Paczka> rruOnBts = new java.util.ArrayList<Paczka>();
-        String rruBts = north.make(this.bscName, "DSP BTSBRD: INFOTYPE=INPOSBRD,IDTYPE=BYNAME,BTSNAME=\"" + this.BtsName + "\"");
+        String rruBts = north.make(this.bscName, "DSP BTSBRD: INFOTYPE=INPOSBRD,IDTYPE=BYNAME,BTSNAME=\"" + this.btsName + "\"");
         listF.dopisz(rruBts + "\r\n");
 
         if (rruBts.contains("RETCODE = 0"))
@@ -196,7 +196,7 @@ public class SectorFactory
 
                     String sn = btssRRU.get(rr).getWartosc("Slot No.");
 
-                    String rruBtsDet = north.make(this.bscName, "DSP BTSBRD: INFOTYPE=RUNPARA,IDTYPE=BYNAME,BTSNAME=\"" + this.BtsName + "\",BRDTYPE=RXU,RXUIDTYPE=SRNSN,RXUCN=" + cn + ",RXUSRN=" + srn + ",RXUSN=" + sn);
+                    String rruBtsDet = north.make(this.bscName, "DSP BTSBRD: INFOTYPE=RUNPARA,IDTYPE=BYNAME,BTSNAME=\"" + this.btsName + "\",BRDTYPE=RXU,RXUIDTYPE=SRNSN,RXUCN=" + cn + ",RXUSRN=" + srn + ",RXUSN=" + sn);
                     listF.dopisz(rruBtsDet + "\r\n");
                     NPack rruDetNp = new NPack(rruBtsDet.split("\n"), new String[]
                     {
@@ -295,7 +295,7 @@ public class SectorFactory
             if(!used_azymutPasmo.contains(azymut+";"+pasmo))
                 {
                 used_azymutPasmo.add(azymut+";"+pasmo);
-                sektor sek=new pem_lte.sektor(azymut, pasmo,bscName,BtsName,NeName,onlyCheck);
+                sektor sek=new pem_lte.sektor(azymut, pasmo,bscName,btsName,NeName,onlyCheck);
                     sek.addSektors_Id(sektorId);
                 sek.addKomorki(this.getCellsOnSectorId(sektorId, sectorEqLst, north,pasmo,ucellOnRncSite));
 
@@ -396,7 +396,7 @@ public class SectorFactory
                 if (!used_azymutPasmo.contains(azymutFromCell + ";" + pasmo))
                 {
                     used_azymutPasmo.add(azymutFromCell + ";" + pasmo);
-                    sektor sek = new pem_lte.sektor(azymutFromCell, pasmo, bscName, BtsName, NeName, onlyCheck);
+                    sektor sek = new pem_lte.sektor(azymutFromCell, pasmo, bscName, btsName, NeName, onlyCheck);
                      java.util.ArrayList<Paczka> sectorsEqDet=getSectEqLst(null, sectorEqLst, north, pasmo);
                     sek.setGsmStandAllone(true);
                         java.util.ArrayList<Paczka> selectedRRU = findStandAloneRruFitsToBandAzymuth(pasmo, azymutFromCell, rruOnBts, trxLst, gcell, gcell_lcs,null,null,null);
@@ -517,7 +517,7 @@ public class SectorFactory
                             KomorkaGsm gcell=new pem_lte.KomorkaGsm(cellInd);
                             gcell.setPasmo(band);
                             gcell.setKontrolerName(this.bscName);
-                            gcell.setNeName(this.BtsName);
+                            gcell.setNeName(this.btsName);
                             gcell.setLstGcell(lstGcell.get(g));
                             gcell.setLstGcell_lsc(lstGcelllcs.get(l));
                             if(lstGidle!=null&&lstGidle.size()>0)
@@ -629,7 +629,7 @@ public class SectorFactory
                             gcell.setLstBindLocGr(bindLocGrpLst.get(z));
                             gcell.setLstBtsLocgr(BtsLocGrpLst.get(b));
                             gcell.setKontrolerName(this.bscName);
-                            gcell.setNeName(this.BtsName);
+                            gcell.setNeName(this.btsName);
                            
                             gcell.setMainLocGr(main);
                             firstMatch=true;
@@ -677,7 +677,7 @@ public class SectorFactory
                          gcell.setSrn(srn);
                          gcell.setLstBtsLocgr(BtsLocGrpLst.get(b));
                          gcell.setKontrolerName(this.bscName);
-                         gcell.setNeName(this.BtsName);
+                         gcell.setNeName(this.btsName);
                          gcell.setMainLocGr(main);
                          firstMatch=true;
                          kom.add(gcell);
@@ -830,7 +830,7 @@ public class SectorFactory
                                 gcell.setPasmo(band);
                                 gcell.setGlocellId(glocell);
                                 gcell.setKontrolerName(this.bscName);
-                                gcell.setNeName(this.BtsName);
+                                gcell.setNeName(this.btsName);
                                 gcell.setLstGcell(lstGcell.get(g));
                                 gcell.setLstGcell_lsc(lstGcelllcs.get(l));
                                 gcell.setGulGcell(true);
@@ -1451,6 +1451,8 @@ public class SectorFactory
                             }
                         }
                     }
+                    
+                    
                 }
             }
         }
