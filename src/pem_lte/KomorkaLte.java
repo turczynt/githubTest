@@ -43,7 +43,7 @@ public class KomorkaLte extends Komorka
     String rsMargAct;
     String rsToset;
             
-    String NeName;
+    String neName;
     String kontrolerName;
             
     String lteCellIndex;
@@ -345,7 +345,7 @@ public class KomorkaLte extends Komorka
 
     public void setNeName(String NeName)
     {
-        this.NeName = NeName;
+        this.neName = NeName;
     }
 
     public void setKontrolerName(String kontrolerName)
@@ -361,22 +361,22 @@ public class KomorkaLte extends Komorka
         if(this.powerToSet>0.0)
         {
             if(this.isUnReserved())
-                odp=odp+"MOD CELLOP:LOCALCELLID="+this.locallCellId+",TRACKINGAREAID=0,CELLRESERVEDFOROP=CELL_RESERVED_FOR_OP;{"+this.NeName+"}\r\n";
+                odp=odp+"MOD CELLOP:LOCALCELLID="+this.locallCellId+",TRACKINGAREAID=0,CELLRESERVEDFOROP=CELL_RESERVED_FOR_OP;{"+this.neName+"}\r\n";
             else
-                odp=odp+"////MOD CELLOP:LOCALCELLID="+this.locallCellId+",TRACKINGAREAID=0,CELLRESERVEDFOROP=CELL_RESERVED_FOR_OP;{"+this.NeName+"}\r\n";
+                odp=odp+"////MOD CELLOP:LOCALCELLID="+this.locallCellId+",TRACKINGAREAID=0,CELLRESERVEDFOROP=CELL_RESERVED_FOR_OP;{"+this.neName+"}\r\n";
             
             if(this.isUnBlocked())
-                odp=odp+"///UBL CELL:LOCALCELLID="+this.locallCellId+";{"+this.NeName+"}\r\n";
+                odp=odp+"///UBL CELL:LOCALCELLID="+this.locallCellId+";{"+this.neName+"}\r\n";
             else
-                odp=odp+"UBL CELL:LOCALCELLID="+this.locallCellId+";{"+this.NeName+"}\r\n";
+                odp=odp+"UBL CELL:LOCALCELLID="+this.locallCellId+";{"+this.neName+"}\r\n";
         }
         else
         {
           
             if(this.isUnBlocked())
-                odp=odp+"BLK CELL:LOCALCELLID="+this.locallCellId+",CELLADMINSTATE=CELL_HIGH_BLOCK;{"+this.NeName+"}\r\n";
+                odp=odp+"BLK CELL:LOCALCELLID="+this.locallCellId+",CELLADMINSTATE=CELL_HIGH_BLOCK;{"+this.neName+"}\r\n";
             else
-                odp=odp+"///BLK CELL:LOCALCELLID="+this.locallCellId+",CELLADMINSTATE=CELL_HIGH_BLOCK;{"+this.NeName+"}\r\n";
+                odp=odp+"///BLK CELL:LOCALCELLID="+this.locallCellId+",CELLADMINSTATE=CELL_HIGH_BLOCK;{"+this.neName+"}\r\n";
         }
         return odp;
     }    
@@ -388,8 +388,8 @@ public class KomorkaLte extends Komorka
         if(this.powerToSet>0.0)
         {
            // odp=odp+"STR CFGCHK:;{"+this.NeName+"}\r\n";
-            odp=odp+"MOD CELLDLPCPDSCHPA:LOCALCELLID="+this.locallCellId+",PAPCOFF=DB_3_P_A;{"+this.NeName+"}\r\n";
-            odp=odp+"MOD PDSCHCFG:LOCALCELLID="+this.locallCellId+",REFERENCESIGNALPWR="+this.rsToset+",PB=1;{"+this.NeName+"}\r\n";
+            odp=odp+"MOD CELLDLPCPDSCHPA:LOCALCELLID="+this.locallCellId+",PAPCOFF=DB_3_P_A;{"+this.neName+"}\r\n";
+            odp=odp+"MOD PDSCHCFG:LOCALCELLID="+this.locallCellId+",REFERENCESIGNALPWR="+this.rsToset+",PB=1;{"+this.neName+"}\r\n";
             
             //       MOD CELLDLPCPDSCHPA:LOCALCELLID=1,PAPCOFF=DB_3_P_A;
         }
@@ -402,7 +402,7 @@ public class KomorkaLte extends Komorka
         String odp="";
         if(this.powerToSet>0.0)
         {
-            odp=odp+"STR CFGCHK:;{"+this.NeName+"}\r\n";
+            odp=odp+"STR CFGCHK:;{"+this.neName+"}\r\n";
           //  odp=odp+"MOD CELLDLPCPDSCHPA:LOCALCELLID="+this.locallCellId+",PAPCOFF=DB_3_P_A;{"+this.NeName+"}\r\n";
             //odp=odp+"MOD PDSCHCFG:LOCALCELLID="+this.locallCellId+",REFERENCESIGNALPWR="+this.rsToset+",PB=1;{"+this.NeName+"}\r\n";
             
@@ -419,7 +419,7 @@ public class KomorkaLte extends Komorka
             String kom="ADD CELLSIMULOAD:LOCALCELLID="+this.locallCellId+",SIMLOADCFGINDEX=9,SIMULOADTRANSMODE=TM"+this.txNum+"";
             if(this.txNum>2)
                 kom=kom+",SIMULOADPMI="+this.txNum;
-            return kom+";{"+this.NeName+"}\r\n";
+            return kom+";{"+this.neName+"}\r\n";
         }
         else
              return "";
@@ -511,7 +511,7 @@ public class KomorkaLte extends Komorka
     {
         if(this.powerToSet>0.0)
         {
-            return "RMV CELLSIMULOAD:LOCALCELLID="+this.locallCellId+";{"+this.NeName+"}\r\n";
+            return "RMV CELLSIMULOAD:LOCALCELLID="+this.locallCellId+";{"+this.neName+"}\r\n";
         }
         else
              return "";
@@ -525,14 +525,14 @@ public class KomorkaLte extends Komorka
     {
         String odp="";
            if(this.isUnReserved())
-                odp=odp+"MOD CELLOP:LOCALCELLID="+this.locallCellId+",TRACKINGAREAID=0,CELLRESERVEDFOROP=CELL_NOT_RESERVED_FOR_OP;{"+this.NeName+"}\r\n";
+                odp=odp+"MOD CELLOP:LOCALCELLID="+this.locallCellId+",TRACKINGAREAID=0,CELLRESERVEDFOROP=CELL_NOT_RESERVED_FOR_OP;{"+this.neName+"}\r\n";
             else
-                odp=odp+"MOD CELLOP:LOCALCELLID="+this.locallCellId+",TRACKINGAREAID=0,CELLRESERVEDFOROP=CELL_RESERVED_FOR_OP;{"+this.NeName+"}\r\n";
+                odp=odp+"MOD CELLOP:LOCALCELLID="+this.locallCellId+",TRACKINGAREAID=0,CELLRESERVEDFOROP=CELL_RESERVED_FOR_OP;{"+this.neName+"}\r\n";
             
             if(this.isUnBlocked())
-                odp=odp+"UBL CELL:LOCALCELLID="+this.locallCellId+";{"+this.NeName+"}\r\n";
+                odp=odp+"UBL CELL:LOCALCELLID="+this.locallCellId+";{"+this.neName+"}\r\n";
             else
-                odp=odp+"BLK CELL:LOCALCELLID="+this.locallCellId+",CELLADMINSTATE=CELL_HIGH_BLOCK;{"+this.NeName+"}\r\n";
+                odp=odp+"BLK CELL:LOCALCELLID="+this.locallCellId+",CELLADMINSTATE=CELL_HIGH_BLOCK;{"+this.neName+"}\r\n";
        
         return odp;
     }
@@ -543,8 +543,8 @@ public class KomorkaLte extends Komorka
         String odp="";
         if(this.powerToSet>0.0)
         {
-            odp=odp+"MOD CELLDLPCPDSCHPA:LOCALCELLID="+this.locallCellId+",PAPCOFF="+this.paAct+";{"+this.NeName+"}\r\n";
-            odp=odp+"MOD PDSCHCFG:LOCALCELLID="+this.locallCellId+",REFERENCESIGNALPWR="+this.rsAct+",PB="+this.pbAct+";{"+this.NeName+"}\r\n";
+            odp=odp+"MOD CELLDLPCPDSCHPA:LOCALCELLID="+this.locallCellId+",PAPCOFF="+this.paAct+";{"+this.neName+"}\r\n";
+            odp=odp+"MOD PDSCHCFG:LOCALCELLID="+this.locallCellId+",REFERENCESIGNALPWR="+this.rsAct+",PB="+this.pbAct+";{"+this.neName+"}\r\n";
             
             //       MOD CELLDLPCPDSCHPA:LOCALCELLID=1,PAPCOFF=DB_3_P_A;
         }
