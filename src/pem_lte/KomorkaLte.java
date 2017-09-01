@@ -15,7 +15,7 @@ import nbipackage.Paczka;
 public class KomorkaLte extends Komorka
 {
     final Integer  priorytet=Komorka.KOMORKA_LTE;
-    String id;
+   private  String id;
     String locallCellId;
     String srn;
     
