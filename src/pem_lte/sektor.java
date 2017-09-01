@@ -4,7 +4,6 @@
  */
 package pem_lte;
 
-import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
