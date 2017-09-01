@@ -22,7 +22,7 @@ public class NBISender
     java.util.ArrayList<String> commands;
     boolean allCommandSucceded;
     String errorsInfo;
-    nbipackage.NorthB north;
+    private nbipackage.NorthB north;
     int licznikBledow;
 
     public NBISender(String ip, String login,String passwd, NewFile logs, ArrayList<String> commands)
