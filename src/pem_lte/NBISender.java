@@ -15,7 +15,7 @@ import nbipackage.NewFile;
  */
 public class NBISender
 {
-    String ip;
+  private   String ip;
     String login;
     String passwd;
     NewFile logs;
